@@ -38,8 +38,7 @@ public class NumberServerCommand implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        Server server = new Server(port, maxConcurrentConnections, reportFrequency);
-        server.run();
+        NumberServer.getInstance().start(port, maxConcurrentConnections, reportFrequency);
         return  0;
     }
 }
