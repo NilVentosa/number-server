@@ -6,6 +6,8 @@ import org.apache.logging.log4j.Logger;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -14,6 +16,9 @@ import static xyz.ventosa.util.Constants.*;
 public class StoringTask extends TimerTask {
     private static final Logger LOGGER = LogManager.getLogger("number-server");
     private static final StoringTask singleInstance = new StoringTask();
+
+    private static final Set<String> submittedNumbers = new HashSet<>();
+    private static int duplicates;
 
     private static PrintWriter output;
 
@@ -25,11 +30,17 @@ public class StoringTask extends TimerTask {
         }
     }
 
+    public static synchronized void processCorrectInput(String number) {
+        if (submittedNumbers.add(number)) {
+            output.println(number);
+        } else {
+            duplicates++;
+        }
+    }
+
     @Override
     public void run() {
         LOGGER.trace("Storing");
-        output.println("hello");
-        output.println("hello");
         output.flush();
     }
 
@@ -39,5 +50,13 @@ public class StoringTask extends TimerTask {
 
     public void startTask() {
         new Timer().schedule(this, FLUSHING_FREQUENCY, FLUSHING_FREQUENCY);
+    }
+
+    public static int getSubmittedNumbersSize() {
+        return submittedNumbers.size();
+    }
+
+    public static int getDuplicates() {
+        return duplicates;
     }
 }

@@ -14,7 +14,7 @@ public class Reporter extends TimerTask {
 
     @Override
     public void run() {
-        LOGGER.info("Reporting");
+        LOGGER.info("Reporting: {}", StoringTask.getSubmittedNumbersSize());
     }
 
     public static Reporter getInstance() {

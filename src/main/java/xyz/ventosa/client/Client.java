@@ -2,6 +2,9 @@ package xyz.ventosa.client;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import xyz.ventosa.server.NumberServer;
+import xyz.ventosa.util.StoringTask;
+import xyz.ventosa.util.Util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,14 +22,29 @@ public class Client extends Thread {
 
     @Override
     public void run() {
-        try (BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+        try (BufferedReader inputReader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
             while (!socket.isClosed()) {
-                if (input.readLine().equals("exit")) {
-                    break;
-                }
+                processInput(inputReader.readLine());
             }
         } catch (IOException e) {
             LOGGER.debug("Exception: {}", e.getMessage());
         }
     }
+
+    private void processInput(String input) throws IOException {
+        if (input == null) {
+            return;
+        }
+        if (input.equals("terminate")){
+            NumberServer.getInstance().terminate();
+            return;
+        }
+        if (!Util.isNineDigits(input)) {
+            LOGGER.debug("Invalid input: {}.", input);
+            socket.close();
+            return;
+        }
+        StoringTask.processCorrectInput(input);
+    }
+
 }

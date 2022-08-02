@@ -21,7 +21,7 @@ public class NumberServer {
 
     public void start(int port, int reportFrequency) {
         new Thread(() -> {
-            try (ServerSocket serverSocket = new ServerSocket(port);){
+            try (ServerSocket serverSocket = new ServerSocket(port)){
                 LOGGER.debug("Server listening on port {}.", port);
                 while (!serverSocket.isClosed()) {
                     new Client(serverSocket.accept()).start();
@@ -32,5 +32,9 @@ public class NumberServer {
         }).start();
         Reporter.getInstance().startReporting(reportFrequency);
         StoringTask.getInstance().startTask();
+    }
+
+    public void terminate() {
+        // TODO
     }
 }
