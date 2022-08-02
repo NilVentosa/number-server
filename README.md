@@ -1,4 +1,12 @@
 # number-server
+## How to compile and run
+
+The project uses Java 11 and maven.
+
+To compile the project to a jar file execute `mvn clean package`
+
+To run the server with default settings execute `java -jar target/number-server-1.0-SNAPSHOT.jar`. 
+For help with the command and information about arguments add `-h`.
 
 ## Task instructions
 Using any of the following programming language (taking performance into consideration): Java, Kotlin, Python, Go, write a server ("Application") that opens a socket
