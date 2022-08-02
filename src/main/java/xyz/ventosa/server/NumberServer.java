@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.ventosa.client.Client;
 import xyz.ventosa.util.Reporter;
+import xyz.ventosa.util.StoringTask;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -30,5 +31,6 @@ public class NumberServer {
             }
         }).start();
         Reporter.getInstance().startReporting(reportFrequency);
+        StoringTask.getInstance().startTask();
     }
 }
