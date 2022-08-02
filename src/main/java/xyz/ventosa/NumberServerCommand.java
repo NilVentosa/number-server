@@ -31,14 +31,13 @@ public class NumberServerCommand implements Callable<Integer> {
     private int reportFrequency;
 
     public static void main(String[] args) {
-        int exitCode = new CommandLine(new NumberServerCommand()).execute(args);
-        System.exit(exitCode);
+        new CommandLine(new NumberServerCommand()).execute(args);
     }
 
 
     @Override
     public Integer call() {
-        NumberServer.getInstance().start(port, maxConcurrentConnections, reportFrequency);
+        NumberServer.getInstance().start(port, reportFrequency);
         return  0;
     }
 }
