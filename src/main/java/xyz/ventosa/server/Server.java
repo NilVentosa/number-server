@@ -9,6 +9,7 @@ import xyz.ventosa.task.StoringTask;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.SocketException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -64,19 +65,19 @@ public class Server implements Runnable {
             activeClients.put(client.getClientId(), client);
             client.start();
             LOGGER.debug("New client with id: {}.", client.getClientId());
+        } catch (SocketException ignore) {
         } catch (IOException e) {
-            LOGGER.debug("New client wasn't added: {}.", e.getMessage());
+            LOGGER.debug("Exception: {}.", e.getMessage());
         }
 
     }
 
     public synchronized void removeFromActiveClients(int id) {
-        LOGGER.debug("Removing client with id: {} from active clients.", id);
-        activeClients.remove(id);
-    }
-
-    public Map<Integer, Client> getActiveClients() {
-        return activeClients;
+        Client client = activeClients.remove(id);
+        if (client != null) {
+            LOGGER.debug("Removing client with id: {} from active clients.", id);
+            LOGGER.debug("Current active client count: {}.", activeClients.size());
+        }
     }
 
     private static boolean isAcceptingNewClients() {

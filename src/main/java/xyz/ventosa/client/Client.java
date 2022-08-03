@@ -34,34 +34,34 @@ public class Client extends Thread {
         } catch (IOException e) {
             LOGGER.debug("Client exception: {}", e.getMessage());
         } finally {
-            if (Server.getInstance().getActiveClients().containsKey(clientId)) {
-                Server.getInstance().removeFromActiveClients(clientId);
+            try {
+                closeSocket();
+            } catch (IOException e) {
+                LOGGER.debug("Error closing socket: {}.", e.getMessage());
             }
         }
     }
 
     private void processInput(BufferedReader inputReader) throws IOException {
-        String input = null;
         try {
-           input = inputReader.readLine();
+            String input = inputReader.readLine();
+            if (input == null) {
+                LOGGER.debug("Invalid input: null.");
+                throw new IOException("Null input.");
+            }
+            if (input.equals("terminate")){
+                Server.terminate();
+                return;
+            }
+            if (!Util.isNineDigits(input)) {
+                LOGGER.debug("Invalid input: {}.", input);
+                closeSocket();
+                return;
+            }
+            StoringTask.processCorrectInput(input);
         } catch (SocketException e) {
             LOGGER.debug("Error reading line from inputReader: {}.", e.getMessage());
         }
-
-        if (input == null) {
-            LOGGER.debug("Invalid input: null.");
-            return;
-        }
-        if (input.equals("terminate")){
-            Server.terminate();
-            return;
-        }
-        if (!Util.isNineDigits(input)) {
-            LOGGER.debug("Invalid input: {}.", input);
-            closeSocket();
-            return;
-        }
-        StoringTask.processCorrectInput(input);
     }
 
     public int getClientId() {
@@ -69,9 +69,11 @@ public class Client extends Thread {
     }
 
     public void closeSocket() throws IOException {
-        LOGGER.debug("Closing socket for client with id: {}.", clientId);
-        this.socket.close();
-        Server.getInstance().removeFromActiveClients(clientId);
+        if (!this.socket.isClosed()) {
+            LOGGER.debug("Closing socket for client with id: {}.", clientId);
+            this.socket.close();
+            Server.getInstance().removeFromActiveClients(clientId);
+        }
     }
 
 }

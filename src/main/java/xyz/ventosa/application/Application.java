@@ -26,6 +26,11 @@ public class Application {
             Server.getInstance().run();
         } catch (RuntimeException e) {
             LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            return 1;
+        } catch (ExceptionInInitializerError e) {
+            LOGGER.error(e.getException().getMessage());
+            e.printStackTrace();
             return 1;
         }
         return 0;

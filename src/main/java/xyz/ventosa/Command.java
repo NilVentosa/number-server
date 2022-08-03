@@ -31,7 +31,8 @@ public class Command implements Callable<Integer> {
     private int reportFrequency;
 
     public static void main(String[] args) {
-        System.exit(new CommandLine(new Command()).execute(args));
+        int exitCode = new CommandLine(new Command()).execute(args);
+        System.exit(exitCode);
     }
 
 
