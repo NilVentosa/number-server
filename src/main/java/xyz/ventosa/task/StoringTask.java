@@ -22,13 +22,15 @@ public class StoringTask extends TimerTask {
 
     private static PrintWriter output;
 
-    private StoringTask() {
+    static {
         try {
             output = new PrintWriter(new FileWriter(DEFAULT_FILE_NAME, false), false);
         } catch (IOException e) {
             LOGGER.debug(e.getMessage());
         }
     }
+
+    private StoringTask() { }
 
     public static synchronized void processCorrectInput(String number) {
         if (submittedNumbers.add(number)) {
