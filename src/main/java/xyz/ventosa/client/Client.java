@@ -3,7 +3,7 @@ package xyz.ventosa.client;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.ventosa.server.Server;
-import xyz.ventosa.util.StoringTask;
+import xyz.ventosa.task.StoringTask;
 import xyz.ventosa.util.Util;
 
 import java.io.BufferedReader;

@@ -4,8 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.ventosa.application.Application;
 import xyz.ventosa.client.Client;
-import xyz.ventosa.util.Reporter;
-import xyz.ventosa.util.StoringTask;
+import xyz.ventosa.task.ReportingTask;
+import xyz.ventosa.task.StoringTask;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -35,7 +35,7 @@ public class Server implements Runnable {
     public void run() {
         try {
             LOGGER.debug("Server listening on port {}.", serverSocket.getLocalPort());
-            Reporter.getInstance().startReportingTask(Application.getReportFrequency());
+            ReportingTask.getInstance().startReportingTask(Application.getReportFrequency());
             StoringTask.getInstance().startStoringTask(FLUSHING_FREQUENCY);
             while (!serverSocket.isClosed()) {
                 new Client(serverSocket.accept()).start();

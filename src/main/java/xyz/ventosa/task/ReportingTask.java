@@ -1,4 +1,4 @@
-package xyz.ventosa.util;
+package xyz.ventosa.task;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -6,18 +6,18 @@ import org.apache.logging.log4j.Logger;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Reporter extends TimerTask {
+public class ReportingTask extends TimerTask {
     private static final Logger LOGGER = LogManager.getLogger("number-server");
-    private static final Reporter singleInstance = new Reporter();
+    private static final ReportingTask singleInstance = new ReportingTask();
 
-    private Reporter() {}
+    private ReportingTask() {}
 
     @Override
     public void run() {
         LOGGER.info("Reporting: {}", StoringTask.getSubmittedNumbersSize());
     }
 
-    public static Reporter getInstance() {
+    public static ReportingTask getInstance() {
         return singleInstance;
     }
 
