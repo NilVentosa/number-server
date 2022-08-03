@@ -2,7 +2,7 @@ package xyz.ventosa.client;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import xyz.ventosa.server.NumberServer;
+import xyz.ventosa.server.Server;
 import xyz.ventosa.util.StoringTask;
 import xyz.ventosa.util.Util;
 
@@ -36,7 +36,7 @@ public class Client extends Thread {
             return;
         }
         if (input.equals("terminate")){
-            NumberServer.getInstance().terminate();
+            Server.getInstance().terminate();
             return;
         }
         if (!Util.isNineDigits(input)) {

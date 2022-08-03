@@ -48,8 +48,8 @@ public class StoringTask extends TimerTask {
         return singleInstance;
     }
 
-    public void startTask() {
-        new Timer().schedule(this, FLUSHING_FREQUENCY, FLUSHING_FREQUENCY);
+    public void startStoringTask(int flushingFrequency) {
+        new Timer().schedule(this, flushingFrequency, flushingFrequency);
     }
 
     public static int getSubmittedNumbersSize() {

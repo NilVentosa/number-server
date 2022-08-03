@@ -21,7 +21,7 @@ public class Reporter extends TimerTask {
         return singleInstance;
     }
 
-    public void startReporting(int frequency) {
+    public void startReportingTask(int frequency) {
         new Timer().schedule(this, frequency, frequency);
     }
 }

@@ -2,15 +2,15 @@ package xyz.ventosa;
 
 import picocli.CommandLine;
 import picocli.CommandLine.*;
-import xyz.ventosa.server.NumberServer;
+import xyz.ventosa.application.Application;
 
 import java.util.concurrent.Callable;
 
 import static xyz.ventosa.util.Constants.*;
 
-@Command(name = "number-server", mixinStandardHelpOptions = true,
+@CommandLine.Command(name = "number-server", mixinStandardHelpOptions = true,
     version = "number-server 1.0", description = "Starts a number server.", showDefaultValues = true)
-public class NumberServerCommand implements Callable<Integer> {
+public class Command implements Callable<Integer> {
 
     @Option(
             names = {"-p", "--port"},
@@ -31,13 +31,13 @@ public class NumberServerCommand implements Callable<Integer> {
     private int reportFrequency;
 
     public static void main(String[] args) {
-        new CommandLine(new NumberServerCommand()).execute(args);
+        System.exit(new CommandLine(new Command()).execute(args));
     }
 
 
     @Override
     public Integer call() {
-        NumberServer.getInstance().start(port, reportFrequency);
-        return  0;
+        Application.configureInstance(port, maxConcurrentConnections, reportFrequency);
+        return Application.start();
     }
 }

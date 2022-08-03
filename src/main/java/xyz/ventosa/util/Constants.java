@@ -8,4 +8,6 @@ public class Constants {
     public static final int FLUSHING_FREQUENCY = 500;
     public static final String DEFAULT_FILE_NAME = "numbers.log";
 
+    private Constants() {}
+
 }
