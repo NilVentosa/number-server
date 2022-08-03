@@ -37,41 +37,37 @@ public class Server implements Runnable {
 
     @Override
     public void run() {
-        try {
-            LOGGER.info("Server listening on port {}.", serverSocket.getLocalPort());
-            ReportingTask.getInstance().startReportingTask(Application.getReportFrequency());
-            StoringTask.getInstance().startStoringTask(FLUSHING_FREQUENCY);
-            while (!serverSocket.isClosed()) {
-                if (isAcceptingNewClients()) {
-                    addAndStartNewClient();
-                }
+        LOGGER.info("Server listening on port {}.", serverSocket.getLocalPort());
+        ReportingTask.getInstance().startReportingTask(Application.getReportFrequency());
+        StoringTask.getInstance().startStoringTask(FLUSHING_FREQUENCY);
+        while (!serverSocket.isClosed()) {
+            if (isAcceptingNewClients()) {
+                addAndStartNewClient();
             }
-        } catch (IOException e) {
-            LOGGER.debug("Server exception: {}", e.getMessage());
         }
     }
 
-    public static synchronized void terminate() {
-        try {
-            LOGGER.info("Terminating task started.");
-            acceptingNewClients = false;
-            for (Client client: activeClients.values()) {
-                client.closeSocket();
-            }
-            StoringTask.getInstance().run();
-            serverSocket.close();
-            LOGGER.info("Terminating task finalized.");
-        } catch (IOException e) {
-            LOGGER.debug("TERMINATE: {}", e.getMessage());
+    public static synchronized void terminate() throws IOException {
+        LOGGER.info("Terminating task started.");
+        acceptingNewClients = false;
+        for (Client client: activeClients.values()) {
+            client.closeSocket();
         }
-
+        StoringTask.getInstance().run();
+        serverSocket.close();
+        LOGGER.info("Terminating task finalized.");
     }
 
-    private void addAndStartNewClient() throws IOException {
-        Client client = new Client(serverSocket.accept());
-        activeClients.put(client.getClientId(), client);
-        client.start();
-        LOGGER.debug("New client with id: {}.", client.getClientId());
+    private void addAndStartNewClient() {
+        try {
+            Client client = new Client(serverSocket.accept());
+            activeClients.put(client.getClientId(), client);
+            client.start();
+            LOGGER.debug("New client with id: {}.", client.getClientId());
+        } catch (IOException e) {
+            LOGGER.debug("New client wasn't added: {}.", e.getMessage());
+        }
+
     }
 
     public synchronized void removeFromActiveClients(int id) {

@@ -51,6 +51,7 @@ public class StoringTask extends TimerTask {
     }
 
     public void startStoringTask(int flushingFrequency) {
+        LOGGER.info("Starting storing task.");
         new Timer().schedule(this, flushingFrequency, flushingFrequency);
     }
 

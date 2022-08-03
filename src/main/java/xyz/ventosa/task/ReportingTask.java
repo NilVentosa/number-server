@@ -33,6 +33,7 @@ public class ReportingTask extends TimerTask {
     }
 
     public void startReportingTask(int frequency) {
+        LOGGER.info("Starting reporting task.");
         new Timer().schedule(this, frequency, frequency);
     }
 }

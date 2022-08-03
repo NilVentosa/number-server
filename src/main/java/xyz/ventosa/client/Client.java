@@ -29,7 +29,7 @@ public class Client extends Thread {
     public void run() {
         try (BufferedReader inputReader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
             while (!socket.isClosed()) {
-                processInput(inputReader.readLine());
+                processInput(inputReader);
             }
         } catch (IOException e) {
             LOGGER.debug("Client exception: {}", e.getMessage());
@@ -40,7 +40,14 @@ public class Client extends Thread {
         }
     }
 
-    private void processInput(String input) throws IOException {
+    private void processInput(BufferedReader inputReader) throws IOException {
+        String input = null;
+        try {
+           input = inputReader.readLine();
+        } catch (SocketException e) {
+            LOGGER.debug("Error reading line from inputReader: {}.", e.getMessage());
+        }
+
         if (input == null) {
             LOGGER.debug("Invalid input: null.");
             return;
