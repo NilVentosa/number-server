@@ -26,11 +26,18 @@ public class StoringTask extends TimerTask {
         try {
             output = new PrintWriter(new FileWriter(DEFAULT_FILE_NAME, false), false);
         } catch (IOException e) {
-            LOGGER.debug(e.getMessage());
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 
     private StoringTask() { }
+
+    @Override
+    public void run() {
+        flush();
+    }
 
     public static synchronized void processCorrectInput(String number) {
         if (submittedNumbers.add(number)) {
@@ -38,12 +45,6 @@ public class StoringTask extends TimerTask {
         } else {
             duplicates++;
         }
-    }
-
-    @Override
-    public void run() {
-        LOGGER.trace("Storing");
-        output.flush();
     }
 
     public static StoringTask getInstance() {
@@ -61,5 +62,10 @@ public class StoringTask extends TimerTask {
 
     public static int getDuplicates() {
         return duplicates;
+    }
+
+    public static void flush(){
+        LOGGER.trace("Storing");
+        output.flush();
     }
 }

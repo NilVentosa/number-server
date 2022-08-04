@@ -19,7 +19,7 @@ public class Server implements Runnable {
     private static final Logger LOGGER = LogManager.getLogger("number-server");
     private static final Server instance = new Server();
     private static final ServerSocket serverSocket;
-    private static final Map<Integer, Client> activeClients = new ConcurrentHashMap<>();
+    private static final Map<Integer, Client> activeClientList = new ConcurrentHashMap<>();
     private static boolean acceptingNewClients = true;
 
     private Server() {}
@@ -48,39 +48,52 @@ public class Server implements Runnable {
         }
     }
 
-    public static synchronized void terminate() throws IOException {
-        LOGGER.info("Terminating task started.");
-        acceptingNewClients = false;
-        for (Client client: activeClients.values()) {
-            client.closeSocket();
+    public static synchronized void terminate() {
+        try {
+            LOGGER.info("Terminating task started.");
+            acceptingNewClients = false;
+            endAllClients();
+            StoringTask.flush();
+            serverSocket.close();
+            LOGGER.info("Terminating task finalized.");
+            System.exit(0);
+        } catch (SocketException e) {
+            LOGGER.debug("Socket exception: {}.", e.getMessage());
+        } catch (IOException e) {
+            LOGGER.error("Exception in terminate: {}.", e.getMessage());
+            System.exit(1);
         }
-        StoringTask.getInstance().run();
-        serverSocket.close();
-        LOGGER.info("Terminating task finalized.");
+
     }
 
-    private void addAndStartNewClient() {
+    private synchronized void addAndStartNewClient() {
         try {
             Client client = new Client(serverSocket.accept());
-            activeClients.put(client.getClientId(), client);
+            activeClientList.put(client.getClientId(), client);
             client.start();
             LOGGER.debug("New client with id: {}.", client.getClientId());
-        } catch (SocketException ignore) {
+        } catch (SocketException e) {
+            LOGGER.debug("Socket exception: {}.", e.getMessage());
         } catch (IOException e) {
             LOGGER.debug("Exception: {}.", e.getMessage());
         }
 
     }
 
-    public synchronized void removeFromActiveClients(int id) {
-        Client client = activeClients.remove(id);
+    public void removeFromActiveClients(int id) {
+        Client client = activeClientList.remove(id);
         if (client != null) {
             LOGGER.debug("Removing client with id: {} from active clients.", id);
-            LOGGER.debug("Current active client count: {}.", activeClients.size());
         }
     }
 
     private static boolean isAcceptingNewClients() {
-        return activeClients.size() < Application.getMaxConcurrentConnections() && acceptingNewClients;
+        return activeClientList.size() < Application.getMaxConcurrentConnections() && acceptingNewClients;
+    }
+
+    private static void endAllClients() {
+        for (Client client: activeClientList.values()) {
+            client.endClient();
+        }
     }
 }
