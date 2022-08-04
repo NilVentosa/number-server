@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.ventosa.server.Server;
 
-import static xyz.ventosa.util.Constants.*;
+import static xyz.ventosa.application.Constants.*;
 
 public class Application {
     private static final Logger LOGGER = LogManager.getLogger("number-server");

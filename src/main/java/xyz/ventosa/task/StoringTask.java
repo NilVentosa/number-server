@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static xyz.ventosa.util.Constants.*;
+import static xyz.ventosa.application.Constants.*;
 
 public class StoringTask extends TimerTask {
     private static final Logger LOGGER = LogManager.getLogger("number-server");

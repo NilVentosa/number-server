@@ -6,7 +6,7 @@ import xyz.ventosa.application.Application;
 
 import java.util.concurrent.Callable;
 
-import static xyz.ventosa.util.Constants.*;
+import static xyz.ventosa.application.Constants.*;
 
 @CommandLine.Command(name = "number-server", mixinStandardHelpOptions = true,
     version = "number-server 1.0", description = "Starts a number server.", showDefaultValues = true)

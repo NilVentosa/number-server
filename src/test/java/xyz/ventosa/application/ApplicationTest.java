@@ -2,7 +2,6 @@ package xyz.ventosa.application;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import xyz.ventosa.util.Constants;
 
 public class ApplicationTest {
 

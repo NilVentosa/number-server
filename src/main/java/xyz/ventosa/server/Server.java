@@ -13,7 +13,7 @@ import java.net.SocketException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static xyz.ventosa.util.Constants.FLUSHING_FREQUENCY;
+import static xyz.ventosa.application.Constants.FLUSHING_FREQUENCY;
 
 public class Server implements Runnable {
     private static final Logger LOGGER = LogManager.getLogger("number-server");
