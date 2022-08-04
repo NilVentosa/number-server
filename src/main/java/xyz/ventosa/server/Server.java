@@ -56,10 +56,10 @@ public class Server implements Runnable {
             LOGGER.debug("Socket exception: {}.", e.getMessage());
         } catch (IOException e) {
             LOGGER.error("Exception in terminate: {}.", e.getMessage());
-            System.exit(1);
+            Application.exit(1);
         }
         LOGGER.info("Terminating task finalized.");
-        System.exit(0);
+        Application.exit(0);
     }
 
 }

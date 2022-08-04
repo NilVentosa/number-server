@@ -12,7 +12,7 @@ The list of optional arguments and its defaults is below.
 
 -f, --file-name=<fileName> File name to print the log of numbers. Default: numbers.log
 
--m, --max-connections=<maxConcurrentConnections> The maximum number of concurrent clients. Default: 10
+-m, --max-connections=<maxConcurrentConnections> The maximum number of concurrent clients. Default: 5
 
 -p, --port=<port> The port the server will listen to. Default: 4000
 

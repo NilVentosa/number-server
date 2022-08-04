@@ -38,7 +38,7 @@ public class Command implements Callable<Integer> {
 
     public static void main(String[] args) {
         int exitCode = new CommandLine(new Command()).execute(args);
-        System.exit(exitCode);
+        Application.exit(exitCode);
     }
 
 

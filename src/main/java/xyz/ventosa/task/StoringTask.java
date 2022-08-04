@@ -29,7 +29,7 @@ public class StoringTask extends TimerTask {
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
-            System.exit(1);
+            Application.exit(1);
         }
     }
 

@@ -3,6 +3,7 @@ package xyz.ventosa.application;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.ventosa.server.Server;
+import xyz.ventosa.task.StoringTask;
 
 import static xyz.ventosa.application.Constants.*;
 
@@ -52,5 +53,10 @@ public class Application {
 
     public static String getFileName() {
         return fileName;
+    }
+
+    public static void exit(int code) {
+        StoringTask.flush();
+        System.exit(code);
     }
 }
