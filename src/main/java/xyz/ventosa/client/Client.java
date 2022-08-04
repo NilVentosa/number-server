@@ -47,7 +47,7 @@ public class Client extends Thread {
             String input = inputReader.readLine();
             if (input == null) {
                 LOGGER.debug("Invalid input: null.");
-                throw new IOException("Null input.");
+                throw new IOException("null input.");
             }
             if (input.equals("terminate")){
                 Server.terminate();

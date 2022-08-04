@@ -27,6 +27,7 @@ public class Server implements Runnable {
     static {
         try {
             serverSocket = new ServerSocket(Application.getPort());
+            LOGGER.info("Server listening on port {}.", serverSocket.getLocalPort());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -38,7 +39,6 @@ public class Server implements Runnable {
 
     @Override
     public void run() {
-        LOGGER.info("Server listening on port {}.", serverSocket.getLocalPort());
         ReportingTask.getInstance().startReportingTask(Application.getReportFrequency());
         StoringTask.getInstance().startStoringTask(FLUSHING_FREQUENCY);
         while (!serverSocket.isClosed()) {

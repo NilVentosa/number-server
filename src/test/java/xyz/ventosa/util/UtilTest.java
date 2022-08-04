@@ -1,43 +1,42 @@
 package xyz.ventosa.util;
 
-
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class UtilTest {
 
     @Test
     public void isNineDigitsTerminate() {
-        Assert.assertFalse(Util.isNineDigits("terminate"));
+        Assertions.assertFalse(Util.isNineDigits("terminate"));
     }
 
     @Test
     public void isNineDigitsEmpty() {
-        Assert.assertFalse(Util.isNineDigits(""));
+        Assertions.assertFalse(Util.isNineDigits(""));
     }
 
     @Test
     public void isNineDigitsTooShort() {
-        Assert.assertFalse(Util.isNineDigits("88888888"));
+        Assertions.assertFalse(Util.isNineDigits("88888888"));
     }
 
     @Test
     public void isNineDigitsTooLong() {
-        Assert.assertFalse(Util.isNineDigits("1010101010"));
+        Assertions.assertFalse(Util.isNineDigits("1010101010"));
     }
 
     @Test
     public void isNineDigitsLetters() {
-        Assert.assertFalse(Util.isNineDigits("sssssssss"));
+        Assertions.assertFalse(Util.isNineDigits("sssssssss"));
     }
 
     @Test
     public void isNineDigitsCaseValid() {
-        Assert.assertTrue(Util.isNineDigits("123456789"));
+        Assertions.assertTrue(Util.isNineDigits("123456789"));
     }
 
     @Test
     public void isNineDigitsCaseValidZeroes() {
-        Assert.assertTrue(Util.isNineDigits("000000000"));
+        Assertions.assertTrue(Util.isNineDigits("000000000"));
     }
 }
