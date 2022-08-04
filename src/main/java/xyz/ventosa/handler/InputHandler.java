@@ -1,7 +1,8 @@
-package xyz.ventosa.client;
+package xyz.ventosa.handler;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import xyz.ventosa.client.Client;
 import xyz.ventosa.server.Server;
 import xyz.ventosa.task.StoringTask;
 
@@ -9,10 +10,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class InputProcessor {
+public class InputHandler {
     private static final Logger LOGGER = LogManager.getLogger("number-server");
 
-    private InputProcessor() {}
+    private InputHandler() {}
 
     public static void processClientInput(Client client) {
         try (BufferedReader inputReader = new BufferedReader(new InputStreamReader(client.getSocket().getInputStream()))) {
@@ -24,8 +25,7 @@ public class InputProcessor {
         } catch (IOException e) {
             LOGGER.debug("Client exception: {}", e.getMessage());
         } finally {
-            client.endClient();
-            Server.getInstance().removeFromActiveClients(client.getClientId());
+            ClientHandler.endClient(client);
         }
     }
 

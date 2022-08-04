@@ -1,4 +1,4 @@
-package xyz.ventosa.client;
+package xyz.ventosa.handler;
 
 public class ProcessingException extends Exception {
 

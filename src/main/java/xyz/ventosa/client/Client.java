@@ -2,10 +2,9 @@ package xyz.ventosa.client;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import xyz.ventosa.server.Server;
-import java.io.IOException;
+import xyz.ventosa.handler.InputHandler;
+
 import java.net.Socket;
-import java.net.SocketException;
 
 public class Client extends Thread {
     private static final Logger LOGGER = LogManager.getLogger("number-server");
@@ -22,7 +21,7 @@ public class Client extends Thread {
 
     @Override
     public void run() {
-        InputProcessor.processClientInput(this);
+        InputHandler.processClientInput(this);
     }
 
     public int getClientId() {
@@ -31,18 +30,6 @@ public class Client extends Thread {
 
     public Socket getSocket() {
         return socket;
-    }
-
-    public void endClient() {
-        try {
-            LOGGER.debug("Closing socket for client with id: {}.", clientId);
-            this.socket.close();
-        } catch (SocketException e) {
-            LOGGER.debug("Socket exception: {}.", e.getMessage());
-        } catch (IOException e) {
-            LOGGER.debug("Exception in endClient: {}.", e.getMessage());
-        }
-
     }
 
 }
