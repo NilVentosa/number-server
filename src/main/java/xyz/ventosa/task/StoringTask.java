@@ -2,6 +2,7 @@ package xyz.ventosa.task;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import xyz.ventosa.application.Application;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -24,7 +25,7 @@ public class StoringTask extends TimerTask {
 
     static {
         try {
-            output = new PrintWriter(new FileWriter(DEFAULT_FILE_NAME, false), false);
+            output = new PrintWriter(new FileWriter(Application.getFileName(), false), false);
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
@@ -51,9 +52,9 @@ public class StoringTask extends TimerTask {
         return singleInstance;
     }
 
-    public void startStoringTask(int flushingFrequency) {
+    public void startStoringTask() {
         LOGGER.info("Starting storing task.");
-        new Timer().schedule(this, flushingFrequency, flushingFrequency);
+        new Timer().schedule(this, FLUSHING_FREQUENCY, FLUSHING_FREQUENCY);
     }
 
     public static int getSubmittedNumbersSize() {

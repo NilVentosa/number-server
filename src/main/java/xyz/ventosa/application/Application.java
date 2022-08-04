@@ -12,13 +12,15 @@ public class Application {
     private static int port = Integer.parseInt(DEFAULT_PORT);
     private static int maxConcurrentConnections = Integer.parseInt(DEFAULT_MAX_CONCURRENT_CLIENTS);
     private static int reportFrequency = Integer.parseInt(DEFAULT_REPORT_FREQUENCY);
+    private static String fileName = DEFAULT_FILE_NAME;
 
     private Application() {}
 
-    public static void configureInstance(int portArg, int maxConcurrentConnectionsArg, int reportFrequencyArg) {
+    public static void configureInstance(int portArg, int maxConcurrentConnectionsArg, int reportFrequencyArg, String fileNameArg) {
         port = portArg;
         maxConcurrentConnections = maxConcurrentConnectionsArg;
         reportFrequency = reportFrequencyArg;
+        fileName = fileNameArg;
     }
 
     public static int start() {
@@ -46,5 +48,9 @@ public class Application {
 
     public static int getReportFrequency() {
         return reportFrequency;
+    }
+
+    public static String getFileName() {
+        return fileName;
     }
 }

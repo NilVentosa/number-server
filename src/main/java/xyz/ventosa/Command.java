@@ -30,6 +30,12 @@ public class Command implements Callable<Integer> {
             defaultValue = DEFAULT_REPORT_FREQUENCY)
     private int reportFrequency;
 
+    @Option(
+            names = {"-f", "--file-name"},
+            description = "File name to print the log of numbers.",
+            defaultValue = DEFAULT_FILE_NAME)
+    private String fileName;
+
     public static void main(String[] args) {
         int exitCode = new CommandLine(new Command()).execute(args);
         System.exit(exitCode);
@@ -38,7 +44,7 @@ public class Command implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        Application.configureInstance(port, maxConcurrentConnections, reportFrequency);
+        Application.configureInstance(port, maxConcurrentConnections, reportFrequency, fileName);
         return Application.start();
     }
 }

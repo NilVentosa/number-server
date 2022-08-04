@@ -1,12 +1,26 @@
 # number-server
-## How to compile and run
+## How to compile
 
 The project uses Java 11 and maven.
 
-To compile the project to a jar file execute `mvn clean package`
+To compile the project to a jar file execute `mvn clean package`. The jar will be in the target folder.
 
-To run the server with default settings execute `java -jar target/number-server-1.0-SNAPSHOT.jar`. 
-For help with the command and information about arguments add `-h`.
+## Usage
+
+To run the server with default settings execute `java -jar number-server-1.0-SNAPSHOT.jar`. 
+The list of optional arguments and its defaults is below.
+
+-f, --file-name=<fileName> File name to print the log of numbers. Default: numbers.log
+
+-m, --max-connections=<maxConcurrentConnections> The maximum number of concurrent clients. Default: 10
+
+-p, --port=<port> The port the server will listen to. Default: 4000
+
+-r, --report-frequency=<reportFrequency> How often (in milliseconds) the report will be printed. Default: 10000
+
+-h, --help Show this help message and exit.
+
+-V, --version Print version information and exit.
 
 ## Task instructions
 Using any of the following programming language (taking performance into consideration): Java, Kotlin, Python, Go, write a server ("Application") that opens a socket

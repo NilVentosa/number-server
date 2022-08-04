@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketException;
 
-import static xyz.ventosa.application.Constants.FLUSHING_FREQUENCY;
-
 public class Server implements Runnable {
     private static final Logger LOGGER = LogManager.getLogger("number-server");
     private static final Server instance = new Server();
@@ -40,7 +38,7 @@ public class Server implements Runnable {
     @Override
     public void run() {
         ReportingTask.getInstance().startReportingTask(Application.getReportFrequency());
-        StoringTask.getInstance().startStoringTask(FLUSHING_FREQUENCY);
+        StoringTask.getInstance().startStoringTask();
         while (!serverSocket.isClosed()) {
             if (ClientHandler.isAcceptingNewClients()) {
                 ClientHandler.addAndStartNewClient();
