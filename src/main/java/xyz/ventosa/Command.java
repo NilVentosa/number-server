@@ -4,13 +4,11 @@ import picocli.CommandLine;
 import picocli.CommandLine.*;
 import xyz.ventosa.application.Application;
 
-import java.util.concurrent.Callable;
-
 import static xyz.ventosa.application.Constants.*;
 
 @CommandLine.Command(name = "number-server", mixinStandardHelpOptions = true,
     version = "number-server 1.0", description = "Starts a number server.", showDefaultValues = true)
-public class Command implements Callable<Integer> {
+public class Command implements Runnable {
 
     @Option(
             names = {"-p", "--port"},
@@ -43,8 +41,7 @@ public class Command implements Callable<Integer> {
 
 
     @Override
-    public Integer call() {
-        Application.configureInstance(port, maxConcurrentConnections, reportFrequency, fileName);
-        return Application.start();
+    public void run() {
+        Application.start(port, maxConcurrentConnections, reportFrequency, fileName);
     }
 }

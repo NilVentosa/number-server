@@ -17,26 +17,27 @@ public class Application {
 
     private Application() {}
 
-    public static void configureInstance(int portArg, int maxConcurrentConnectionsArg, int reportFrequencyArg, String fileNameArg) {
-        port = portArg;
-        maxConcurrentConnections = maxConcurrentConnectionsArg;
-        reportFrequency = reportFrequencyArg;
-        fileName = fileNameArg;
-    }
-
-    public static int start() {
+    public static void start(int port, int maxConcurrentConnections, int reportFrequency, String fileName) {
+        configureInstance(port, maxConcurrentConnections, reportFrequency, fileName);
         try {
             Server.getInstance().run();
         } catch (RuntimeException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
-            return 1;
+            exit(1);
         } catch (ExceptionInInitializerError e) {
             LOGGER.error(e.getException().getMessage());
             e.printStackTrace();
-            return 1;
+            exit(1);
         }
-        return 0;
+        exit(0);
+    }
+
+    private static void configureInstance(int portArg, int maxConcurrentConnectionsArg, int reportFrequencyArg, String fileNameArg) {
+        port = portArg;
+        maxConcurrentConnections = maxConcurrentConnectionsArg;
+        reportFrequency = reportFrequencyArg;
+        fileName = fileNameArg;
     }
 
     public static int getPort() {
