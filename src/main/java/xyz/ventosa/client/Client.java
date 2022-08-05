@@ -14,13 +14,15 @@ import java.net.SocketException;
 import static xyz.ventosa.util.Util.isTerminate;
 import static xyz.ventosa.util.Util.isValidNumber;
 
-
 public class Client implements Runnable {
     private static final Logger LOGGER = LogManager.getLogger("number-server");
 
     private final Socket socket;
+
     private final int clientId;
+
     private static int clientInstanceCount;
+
     private final ClientHandler clientHandler;
 
     public Client(Socket socket, ClientHandler clientHandler) {
@@ -36,9 +38,11 @@ public class Client implements Runnable {
             while (!this.socket.isClosed()) {
                 processInput(inputReader.readLine());
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOGGER.debug("{}: {}.", e.getClass().getSimpleName(), e.getMessage());
-        } finally {
+        }
+        finally {
             terminateClient();
         }
     }
@@ -46,9 +50,11 @@ public class Client implements Runnable {
     private void processInput(String input) throws NumberServerException {
         if (isValidNumber(input)) {
             StoringTask.processNumber(input);
-        } else  if (isTerminate(input)) {
+        }
+        else if (isTerminate(input)) {
             clientHandler.terminateApplication();
-        } else {
+        }
+        else {
             throw new NumberServerException(String.format("Invalid input: %s", input));
         }
     }
@@ -60,9 +66,11 @@ public class Client implements Runnable {
                 socket.close();
             }
             clientHandler.removeFromActiveClients(clientId);
-        } catch (SocketException e) {
+        }
+        catch (SocketException e) {
             LOGGER.debug("Socket exception: {}.", e.getMessage());
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOGGER.debug("Exception in endClient: {}.", e.getMessage());
         }
     }

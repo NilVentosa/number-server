@@ -17,11 +17,13 @@ public class StoringTask extends TimerTask {
     private static final Logger LOGGER = LogManager.getLogger("number-server");
 
     private static final Set<String> submittedNumbers = new HashSet<>();
+
     private static int duplicates;
 
     private static PrintWriter output;
 
-    private StoringTask() { }
+    private StoringTask() {
+    }
 
     @Override
     public void run() {
@@ -31,7 +33,8 @@ public class StoringTask extends TimerTask {
     public static synchronized void processNumber(String number) {
         if (submittedNumbers.add(number)) {
             output.println(number);
-        } else {
+        }
+        else {
             duplicates++;
         }
     }
@@ -40,7 +43,8 @@ public class StoringTask extends TimerTask {
         LOGGER.info("Starting storing task.");
         try {
             output = new PrintWriter(new FileWriter(filename, false), false);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
             flush();
@@ -56,7 +60,7 @@ public class StoringTask extends TimerTask {
         return duplicates;
     }
 
-    public static void flush(){
+    public static void flush() {
         LOGGER.trace("Storing");
         output.flush();
     }

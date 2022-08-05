@@ -9,22 +9,25 @@ import java.util.TimerTask;
 public class ReportingTask extends TimerTask {
     private static final Logger LOGGER = LogManager.getLogger("number-server");
 
-    private int iterationNumbers;
-    private int iterationDuplicates;
+    private int accumulatedNumbers;
 
-    private ReportingTask() {}
+    private int accumulatedDuplicates;
+
+    private ReportingTask() {
+    }
 
     @Override
     public void run() {
-        int tempNumbers = StoringTask.getSubmittedNumbersSize();
-        int tempDuplicates = StoringTask.getDuplicates();
-        LOGGER.info(
-                "Received {} unique numbers, {} duplicates. Unique total: {}",
-                tempNumbers - iterationNumbers,
-                tempDuplicates - iterationDuplicates,
-                tempNumbers);
-        iterationNumbers = tempNumbers;
-        iterationDuplicates = tempDuplicates;
+        int totalNumbers = StoringTask.getSubmittedNumbersSize();
+        int totalDuplicates = StoringTask.getDuplicates();
+
+        int iterationNumbers = totalNumbers - accumulatedNumbers;
+        int iterationDuplicates = totalDuplicates - accumulatedDuplicates;
+
+        LOGGER.info("Received {} unique numbers, {} duplicates. Unique total: {}", iterationNumbers, iterationDuplicates, totalNumbers);
+
+        accumulatedNumbers = totalNumbers;
+        accumulatedDuplicates = totalDuplicates;
     }
 
     public static void startReportingTask(int frequency) {

@@ -11,7 +11,8 @@ public class Util {
         }
         try {
             Integer.parseInt(input);
-        } catch (NumberFormatException ignore) {
+        }
+        catch (NumberFormatException ignore) {
             return false;
         }
         return true;
@@ -21,5 +22,6 @@ public class Util {
         return "terminate".equals(line);
     }
 
-    private Util(){}
+    private Util() {
+    }
 }

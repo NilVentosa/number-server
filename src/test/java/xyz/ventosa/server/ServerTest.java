@@ -2,11 +2,7 @@ package xyz.ventosa.server;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import xyz.ventosa.task.ReportingTask;
-import xyz.ventosa.task.StoringTask;
 
 import static xyz.ventosa.util.Constants.*;
 
@@ -35,11 +31,5 @@ class ServerTest {
         Mockito.verify(server1).startTasks();
         Mockito.verify(server1).startServerSocket();
         Mockito.verify(server1).startHandlingClients();
-    }
-
-    @Test
-    void startTasks() {
-
-
     }
 }

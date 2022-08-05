@@ -1,38 +1,33 @@
 package xyz.ventosa;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import picocli.CommandLine;
 import picocli.CommandLine.*;
 import xyz.ventosa.server.Server;
 
 import static xyz.ventosa.util.Constants.*;
 
-@CommandLine.Command(name = "number-server", mixinStandardHelpOptions = true,
-    version = "1.0", description = "Starts a number server.", showDefaultValues = true)
+@CommandLine.Command(name = "number-server",
+                     mixinStandardHelpOptions = true,
+                     version = "1.0",
+                     description = "Starts a number server.",
+                     showDefaultValues = true)
 public class Command implements Runnable {
-    private static final Logger LOGGER = LogManager.getLogger("number-server");
-
-    @Option(
-            names = {"-p", "--port"},
+    @Option(names = { "-p", "--port" },
             description = "The port the server will listen to.",
             defaultValue = DEFAULT_PORT)
     private int port;
 
-    @Option(
-            names = {"-m", "--max-connections"},
+    @Option(names = { "-m", "--max-connections" },
             description = "The maximum number of concurrent clients.",
             defaultValue = DEFAULT_MAX_CONCURRENT_CLIENTS)
     private int maxConcurrentConnections;
 
-    @Option(
-            names = {"-r", "--report-frequency"},
+    @Option(names = { "-r", "--report-frequency" },
             description = "How often (in milliseconds) the report will be printed.",
             defaultValue = DEFAULT_REPORT_FREQUENCY)
     private int reportFrequency;
 
-    @Option(
-            names = {"-f", "--file-name"},
+    @Option(names = { "-f", "--file-name" },
             description = "File name to print the log of numbers.",
             defaultValue = DEFAULT_FILE_NAME)
     private String fileName;
@@ -40,7 +35,6 @@ public class Command implements Runnable {
     public static void main(String[] args) {
         new CommandLine(new Command()).execute(args);
     }
-
 
     @Override
     public void run() {

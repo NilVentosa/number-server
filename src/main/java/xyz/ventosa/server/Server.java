@@ -11,10 +11,15 @@ import java.net.ServerSocket;
 
 public class Server {
     private static final Logger LOGGER = LogManager.getLogger("number-server");
+
     private final int port;
+
     private final int maxConcurrentConnections;
+
     private final int reportFrequency;
+
     private final String fileName;
+
     private ServerSocket serverSocket;
 
     public Server(int port, int maxConcurrentConnections, int reportFrequency, String fileName) {
@@ -34,7 +39,8 @@ public class Server {
         try {
             serverSocket = new ServerSocket(port);
             LOGGER.info("Server listening on port: {}.", serverSocket.getLocalPort());
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOGGER.error("Problem starting server: {}.", e.getMessage());
             e.printStackTrace();
             StoringTask.flush();

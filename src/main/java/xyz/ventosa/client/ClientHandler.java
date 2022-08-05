@@ -10,11 +10,13 @@ import java.net.SocketException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-
 public class ClientHandler {
     private static final Logger LOGGER = LogManager.getLogger("number-server");
+
     private final Map<Integer, Client> activeClientList = new ConcurrentHashMap<>();
+
     private boolean acceptingNewClients = true;
+
     private final ServerSocket serverSocket;
 
     public ClientHandler(ServerSocket serverSocket) {
@@ -27,9 +29,11 @@ public class ClientHandler {
             activeClientList.put(client.getClientId(), client);
             new Thread(client).start();
             LOGGER.debug("New client with id: {}.", client.getClientId());
-        } catch (SocketException e) {
+        }
+        catch (SocketException e) {
             LOGGER.debug("Socket exception: {}.", e.getMessage());
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOGGER.debug("Exception: {}.", e.getMessage());
         }
     }
@@ -47,7 +51,7 @@ public class ClientHandler {
 
     void terminateAllClients() {
         LOGGER.info("Terminating all clients.");
-        for (Client client: activeClientList.values()) {
+        for (Client client : activeClientList.values()) {
             client.terminateClient();
         }
     }
@@ -57,9 +61,11 @@ public class ClientHandler {
         StoringTask.flush();
         try {
             serverSocket.close();
-        } catch (SocketException e) {
+        }
+        catch (SocketException e) {
             LOGGER.debug("Socket exception: {}.", e.getMessage());
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOGGER.error("Exception in terminate: {}.", e.getMessage());
             StoringTask.flush();
             System.exit(1);
