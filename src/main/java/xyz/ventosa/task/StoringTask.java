@@ -2,7 +2,6 @@ package xyz.ventosa.task;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import xyz.ventosa.server.Server;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,7 +11,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static xyz.ventosa.Constants.*;
+import static xyz.ventosa.util.Constants.*;
 
 public class StoringTask extends TimerTask {
     private static final Logger LOGGER = LogManager.getLogger("number-server");
@@ -29,7 +28,7 @@ public class StoringTask extends TimerTask {
         flush();
     }
 
-    public static synchronized void processCorrectInput(String number) {
+    public static synchronized void processNumber(String number) {
         if (submittedNumbers.add(number)) {
             output.println(number);
         } else {
@@ -44,7 +43,7 @@ public class StoringTask extends TimerTask {
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
-            Server.exitApplication(1);
+            flush();
         }
         new Timer().schedule(new StoringTask(), FLUSHING_FREQUENCY, FLUSHING_FREQUENCY);
     }

@@ -1,4 +1,4 @@
-package xyz.ventosa;
+package xyz.ventosa.util;
 
 public class Constants {
 

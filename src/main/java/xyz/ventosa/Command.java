@@ -6,7 +6,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.*;
 import xyz.ventosa.server.Server;
 
-import static xyz.ventosa.Constants.*;
+import static xyz.ventosa.util.Constants.*;
 
 @CommandLine.Command(name = "number-server", mixinStandardHelpOptions = true,
     version = "1.0", description = "Starts a number server.", showDefaultValues = true)

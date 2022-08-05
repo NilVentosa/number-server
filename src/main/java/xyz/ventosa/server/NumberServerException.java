@@ -1,6 +1,8 @@
 package xyz.ventosa.server;
 
-public class NumberServerException extends Exception {
+import java.io.IOException;
+
+public class NumberServerException extends IOException {
 
     public NumberServerException(String message) {
         super(message);
