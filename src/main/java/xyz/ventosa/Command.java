@@ -1,14 +1,17 @@
 package xyz.ventosa;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import picocli.CommandLine;
 import picocli.CommandLine.*;
-import xyz.ventosa.application.Application;
+import xyz.ventosa.server.Server;
 
-import static xyz.ventosa.application.Constants.*;
+import static xyz.ventosa.Constants.*;
 
 @CommandLine.Command(name = "number-server", mixinStandardHelpOptions = true,
-    version = "number-server 1.0", description = "Starts a number server.", showDefaultValues = true)
+    version = "1.0", description = "Starts a number server.", showDefaultValues = true)
 public class Command implements Runnable {
+    private static final Logger LOGGER = LogManager.getLogger("number-server");
 
     @Option(
             names = {"-p", "--port"},
@@ -35,13 +38,13 @@ public class Command implements Runnable {
     private String fileName;
 
     public static void main(String[] args) {
-        int exitCode = new CommandLine(new Command()).execute(args);
-        Application.exit(exitCode);
+        new CommandLine(new Command()).execute(args);
     }
 
 
     @Override
     public void run() {
-        Application.start(port, maxConcurrentConnections, reportFrequency, fileName);
+        Server server = new Server(port, maxConcurrentConnections, reportFrequency, fileName);
+        server.startServer();
     }
 }

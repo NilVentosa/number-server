@@ -2,64 +2,49 @@ package xyz.ventosa.server;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import xyz.ventosa.application.Application;
 import xyz.ventosa.handler.ClientHandler;
 import xyz.ventosa.task.ReportingTask;
 import xyz.ventosa.task.StoringTask;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.SocketException;
 
-public class Server implements Runnable {
+public class Server {
     private static final Logger LOGGER = LogManager.getLogger("number-server");
-    private static final Server instance = new Server();
-    private static final ServerSocket serverSocket;
+    private ServerSocket serverSocket;
+    private final int port;
+    private final int maxConcurrentConnections;
+    private final int reportFrequency;
+    private final String fileName;
 
-    private Server() {}
+    public Server(int port, int maxConcurrentConnections, int reportFrequency, String fileName) {
+        this.port = port;
+        this.maxConcurrentConnections = maxConcurrentConnections;
+        this.reportFrequency = reportFrequency;
+        this.fileName = fileName;
+    }
 
-    static {
-        try {
-            serverSocket = new ServerSocket(Application.getPort());
-            LOGGER.info("Server listening on port {}.", serverSocket.getLocalPort());
+    public void startServer() {
+        try{
+            serverSocket = new ServerSocket(port);
+            LOGGER.info("Server listening on port: {}.", serverSocket.getLocalPort());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            LOGGER.error("Problem starting server: {}.", e.getMessage());
+            e.printStackTrace();
+            exitApplication(1);
         }
-    }
 
-    public static Server getInstance() {
-        return instance;
-    }
-
-    public static ServerSocket getServerSocket() {
-        return serverSocket;
-    }
-
-    @Override
-    public void run() {
-        ReportingTask.getInstance().startReportingTask(Application.getReportFrequency());
-        StoringTask.getInstance().startStoringTask();
+        ReportingTask.startReportingTask(reportFrequency);
+        StoringTask.startStoringTask(fileName);
         while (!serverSocket.isClosed()) {
-            if (ClientHandler.isAcceptingNewClients()) {
-                ClientHandler.addAndStartNewClient();
+            if (ClientHandler.isAcceptingNewClients(maxConcurrentConnections)) {
+                ClientHandler.acceptNewClient(serverSocket);
             }
         }
     }
 
-    public static void terminate() {
-        LOGGER.info("Terminating task started.");
-        ClientHandler.endAllClients();
+    public static void exitApplication(int exitCode) {
         StoringTask.flush();
-        try {
-            serverSocket.close();
-        } catch (SocketException e) {
-            LOGGER.debug("Socket exception: {}.", e.getMessage());
-        } catch (IOException e) {
-            LOGGER.error("Exception in terminate: {}.", e.getMessage());
-            Application.exit(1);
-        }
-        LOGGER.info("Terminating task finalized.");
-        Application.exit(0);
+        System.exit(exitCode);
     }
-
 }

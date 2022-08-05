@@ -2,44 +2,47 @@ package xyz.ventosa.handler;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import xyz.ventosa.client.Client;
+import xyz.ventosa.server.NumberServerException;
 import xyz.ventosa.server.Server;
 import xyz.ventosa.task.StoringTask;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.net.ServerSocket;
+import java.net.SocketException;
+
 
 public class InputHandler {
     private static final Logger LOGGER = LogManager.getLogger("number-server");
 
     private InputHandler() {}
 
-    public static void processClientInput(Client client) {
-        try (BufferedReader inputReader = new BufferedReader(new InputStreamReader(client.getSocket().getInputStream()))) {
-            while (!client.getSocket().isClosed()) {
-                processLine(inputReader.readLine());
-            }
-        } catch (ProcessingException e) {
-            LOGGER.debug("Processing exception: {}.", e.getMessage());
-        } catch (IOException e) {
-            LOGGER.debug("Client exception: {}", e.getMessage());
-        } finally {
-            ClientHandler.endClient(client);
-        }
-    }
-
-    private static void processLine(String input) throws ProcessingException {
+    public static void processLine(String input, ServerSocket serverSocket) throws NumberServerException {
         if (input == null) {
-            throw  new ProcessingException("The client closed the connection.");
+            throw  new NumberServerException("The client closed the connection.");
         }
         if (input.equals("terminate")){
-            Server.terminate();
+            terminate(serverSocket);
         }
         if (!isNineDigits(input)) {
-            throw  new ProcessingException(String.format("Invalid input: %s.", input));
+            throw  new NumberServerException(String.format("Invalid input: %s.", input));
         }
         StoringTask.processCorrectInput(input);
+    }
+
+    private static void terminate(ServerSocket serverSocket) {
+        LOGGER.info("Terminating task started.");
+        ClientHandler.endAllClients();
+        StoringTask.flush();
+        try {
+            serverSocket.close();
+        } catch (SocketException e) {
+            LOGGER.debug("Socket exception: {}.", e.getMessage());
+        } catch (IOException e) {
+            LOGGER.error("Exception in terminate: {}.", e.getMessage());
+            Server.exitApplication(1);
+        }
+        LOGGER.info("Terminating task finalized.");
+        Server.exitApplication(0);
     }
 
     private static boolean isNineDigits(String input) {

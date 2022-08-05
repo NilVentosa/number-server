@@ -2,7 +2,7 @@ package xyz.ventosa.task;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import xyz.ventosa.application.Application;
+import xyz.ventosa.server.Server;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,26 +12,15 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static xyz.ventosa.application.Constants.*;
+import static xyz.ventosa.Constants.*;
 
 public class StoringTask extends TimerTask {
     private static final Logger LOGGER = LogManager.getLogger("number-server");
-    private static final StoringTask singleInstance = new StoringTask();
 
     private static final Set<String> submittedNumbers = new HashSet<>();
     private static int duplicates;
 
     private static PrintWriter output;
-
-    static {
-        try {
-            output = new PrintWriter(new FileWriter(Application.getFileName(), false), false);
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-            Application.exit(1);
-        }
-    }
 
     private StoringTask() { }
 
@@ -48,13 +37,16 @@ public class StoringTask extends TimerTask {
         }
     }
 
-    public static StoringTask getInstance() {
-        return singleInstance;
-    }
-
-    public void startStoringTask() {
+    public static void startStoringTask(String filename) {
         LOGGER.info("Starting storing task.");
-        new Timer().schedule(this, FLUSHING_FREQUENCY, FLUSHING_FREQUENCY);
+        try {
+            output = new PrintWriter(new FileWriter(filename, false), false);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            Server.exitApplication(1);
+        }
+        new Timer().schedule(new StoringTask(), FLUSHING_FREQUENCY, FLUSHING_FREQUENCY);
     }
 
     public static int getSubmittedNumbersSize() {

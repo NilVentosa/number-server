@@ -1,4 +1,4 @@
-package xyz.ventosa.application;
+package xyz.ventosa;
 
 public class Constants {
 

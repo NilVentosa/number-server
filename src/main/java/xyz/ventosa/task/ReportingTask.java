@@ -8,7 +8,6 @@ import java.util.TimerTask;
 
 public class ReportingTask extends TimerTask {
     private static final Logger LOGGER = LogManager.getLogger("number-server");
-    private static final ReportingTask singleInstance = new ReportingTask();
 
     private int iterationNumbers;
     private int iterationDuplicates;
@@ -28,12 +27,8 @@ public class ReportingTask extends TimerTask {
         iterationDuplicates = tempDuplicates;
     }
 
-    public static ReportingTask getInstance() {
-        return singleInstance;
-    }
-
-    public void startReportingTask(int frequency) {
+    public static void startReportingTask(int frequency) {
         LOGGER.info("Starting reporting task.");
-        new Timer().schedule(this, frequency, frequency);
+        new Timer().schedule(new ReportingTask(), frequency, frequency);
     }
 }
