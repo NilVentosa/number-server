@@ -86,6 +86,9 @@ public class ClientHandler {
         else if (isTerminate(input)) {
             Application.terminateApplication();
         }
+        else if (input == null) {
+            throw new NumberServerException("Connection closed by the client");
+        }
         else {
             throw new NumberServerException(String.format("Invalid input: %s", input));
         }

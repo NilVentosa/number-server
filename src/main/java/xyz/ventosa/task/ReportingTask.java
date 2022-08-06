@@ -10,6 +10,7 @@ import java.util.TimerTask;
 @Log4j2
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReportingTask extends TimerTask {
+
     private int accumulatedNumbers;
 
     private int accumulatedDuplicates;
