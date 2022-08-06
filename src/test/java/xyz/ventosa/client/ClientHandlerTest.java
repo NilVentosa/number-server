@@ -1,5 +1,6 @@
 package xyz.ventosa.client;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,6 +11,7 @@ import xyz.ventosa.Application;
 import xyz.ventosa.server.NumberServerException;
 import xyz.ventosa.server.Server;
 import xyz.ventosa.task.StoringTask;
+import xyz.ventosa.util.Constants;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -32,11 +34,16 @@ class ClientHandlerTest {
 
     @BeforeEach
     void setup() {
-        server = new Server();
+        server = new Server(Integer.parseInt(Constants.DEFAULT_PORT));
         serverMock = Mockito.mock(Server.class);
         serverSocketMock = Mockito.mock(ServerSocket.class);
         storingTask = Mockito.mock(StoringTask.class);
         socketMock = Mockito.mock(Socket.class);
+    }
+
+    @AfterEach
+    void tearDown() throws IOException {
+        server.getServerSocket().close();
     }
 
     @Test

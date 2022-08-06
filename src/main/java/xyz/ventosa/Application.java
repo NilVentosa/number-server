@@ -18,8 +18,7 @@ public class Application {
 
     public static void startApplication(int port, int maxConcurrentConnections, int reportFrequency, String fileName) {
 
-        server = new Server();
-        server.startServer(port);
+        server = new Server(port);
 
         startTasks(reportFrequency, fileName);
 
