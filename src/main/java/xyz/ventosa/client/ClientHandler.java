@@ -1,7 +1,6 @@
 package xyz.ventosa.client;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import xyz.ventosa.task.StoringTask;
 
 import java.io.IOException;
@@ -10,9 +9,8 @@ import java.net.SocketException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Log4j2
 public class ClientHandler {
-    private static final Logger LOGGER = LogManager.getLogger("number-server");
-
     private final Map<Integer, Client> activeClientList = new ConcurrentHashMap<>();
 
     private boolean acceptingNewClients = true;
@@ -28,20 +26,20 @@ public class ClientHandler {
             Client client = new Client(serverSocket.accept(), this);
             activeClientList.put(client.getClientId(), client);
             new Thread(client).start();
-            LOGGER.debug("New client with id: {}.", client.getClientId());
+            log.debug("New client with id: {}.", client.getClientId());
         }
         catch (SocketException e) {
-            LOGGER.debug("Socket exception: {}.", e.getMessage());
+            log.debug("Socket exception: {}.", e.getMessage());
         }
         catch (IOException e) {
-            LOGGER.debug("Exception: {}.", e.getMessage());
+            log.debug("Exception: {}.", e.getMessage());
         }
     }
 
     void removeFromActiveClients(int id) {
         Client client = activeClientList.remove(id);
         if (client != null) {
-            LOGGER.debug("Removing client with id: {} from active clients.", id);
+            log.debug("Removing client with id: {} from active clients.", id);
         }
     }
 
@@ -49,35 +47,35 @@ public class ClientHandler {
         return acceptingNewClients && activeClientList.size() < maxConcurrentConnections;
     }
 
-    void terminateAllClients() {
-        LOGGER.info("Terminating all clients.");
+    private void terminateAllClients() {
+        log.info("Terminating all clients.");
         for (Client client : activeClientList.values()) {
             client.terminateClient();
         }
     }
 
-    void terminateServer() {
-        LOGGER.info("Terminating server");
+    private void terminateServer() {
+        log.info("Terminating server");
         StoringTask.flush();
         try {
             serverSocket.close();
         }
         catch (SocketException e) {
-            LOGGER.debug("Socket exception: {}.", e.getMessage());
+            log.debug("Socket exception: {}.", e.getMessage());
         }
         catch (IOException e) {
-            LOGGER.error("Exception in terminate: {}.", e.getMessage());
+            log.error("Exception in terminate: {}.", e.getMessage());
             StoringTask.flush();
             System.exit(1);
         }
     }
 
     public void terminateApplication() {
-        LOGGER.info("Terminating task started.");
+        log.info("Terminating task started.");
         acceptingNewClients = false;
         terminateAllClients();
         terminateServer();
-        LOGGER.info("Terminating task ended successfully.");
+        log.info("Terminating task ended successfully.");
         System.exit(0);
     }
 }

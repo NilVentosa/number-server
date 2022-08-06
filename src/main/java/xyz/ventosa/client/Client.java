@@ -1,7 +1,7 @@
 package xyz.ventosa.client;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 import xyz.ventosa.server.NumberServerException;
 import xyz.ventosa.task.StoringTask;
 
@@ -14,11 +14,11 @@ import java.net.SocketException;
 import static xyz.ventosa.util.Util.isTerminate;
 import static xyz.ventosa.util.Util.isValidNumber;
 
+@Log4j2
 public class Client implements Runnable {
-    private static final Logger LOGGER = LogManager.getLogger("number-server");
-
     private final Socket socket;
 
+    @Getter
     private final int clientId;
 
     private static int clientInstanceCount;
@@ -40,7 +40,7 @@ public class Client implements Runnable {
             }
         }
         catch (IOException e) {
-            LOGGER.debug("{}: {}.", e.getClass().getSimpleName(), e.getMessage());
+            log.debug("{}: {}.", e.getClass().getSimpleName(), e.getMessage());
         }
         finally {
             terminateClient();
@@ -62,20 +62,16 @@ public class Client implements Runnable {
     void terminateClient() {
         try {
             if (!socket.isClosed()) {
-                LOGGER.debug("Closing socket for client with id: {}.", clientId);
+                log.debug("Closing socket for client with id: {}.", clientId);
                 socket.close();
             }
             clientHandler.removeFromActiveClients(clientId);
         }
         catch (SocketException e) {
-            LOGGER.debug("Socket exception: {}.", e.getMessage());
+            log.debug("Socket exception: {}.", e.getMessage());
         }
         catch (IOException e) {
-            LOGGER.debug("Exception in endClient: {}.", e.getMessage());
+            log.debug("Exception in endClient: {}.", e.getMessage());
         }
-    }
-
-    public int getClientId() {
-        return clientId;
     }
 }

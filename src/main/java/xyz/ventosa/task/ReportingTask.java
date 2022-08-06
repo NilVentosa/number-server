@@ -1,14 +1,12 @@
 package xyz.ventosa.task;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
+@Log4j2
 public class ReportingTask extends TimerTask {
-    private static final Logger LOGGER = LogManager.getLogger("number-server");
-
     private int accumulatedNumbers;
 
     private int accumulatedDuplicates;
@@ -24,14 +22,14 @@ public class ReportingTask extends TimerTask {
         int iterationNumbers = totalNumbers - accumulatedNumbers;
         int iterationDuplicates = totalDuplicates - accumulatedDuplicates;
 
-        LOGGER.info("Received {} unique numbers, {} duplicates. Unique total: {}", iterationNumbers, iterationDuplicates, totalNumbers);
+        log.info("Received {} unique numbers, {} duplicates. Unique total: {}", iterationNumbers, iterationDuplicates, totalNumbers);
 
         accumulatedNumbers = totalNumbers;
         accumulatedDuplicates = totalDuplicates;
     }
 
     public static void startReportingTask(int frequency) {
-        LOGGER.info("Starting reporting task.");
+        log.info("Starting reporting task.");
         new Timer().schedule(new ReportingTask(), frequency, frequency);
     }
 }

@@ -1,7 +1,8 @@
 package xyz.ventosa.server;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.extern.log4j.Log4j2;
 import xyz.ventosa.client.ClientHandler;
 import xyz.ventosa.task.ReportingTask;
 import xyz.ventosa.task.StoringTask;
@@ -9,9 +10,10 @@ import xyz.ventosa.task.StoringTask;
 import java.io.IOException;
 import java.net.ServerSocket;
 
-public class Server {
-    private static final Logger LOGGER = LogManager.getLogger("number-server");
 
+@Log4j2
+@AllArgsConstructor
+public class Server {
     private final int port;
 
     private final int maxConcurrentConnections;
@@ -20,41 +22,33 @@ public class Server {
 
     private final String fileName;
 
-    private ServerSocket serverSocket;
-
-    public Server(int port, int maxConcurrentConnections, int reportFrequency, String fileName) {
-        this.port = port;
-        this.maxConcurrentConnections = maxConcurrentConnections;
-        this.reportFrequency = reportFrequency;
-        this.fileName = fileName;
-    }
-
     public void startServer() {
-        startServerSocket();
+        ServerSocket serverSocket = startServerSocket();
         startTasks();
-        startHandlingClients();
+        startHandlingClients(serverSocket);
     }
 
-    void startServerSocket() {
-        try {
-            serverSocket = new ServerSocket(port);
-            LOGGER.info("Server listening on port: {}.", serverSocket.getLocalPort());
+    protected ServerSocket startServerSocket() {
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            log.info("Server listening on port: {}.", serverSocket.getLocalPort());
+            return serverSocket;
         }
         catch (IOException e) {
-            LOGGER.error("Problem starting server: {}.", e.getMessage());
+            log.error("Problem starting server: {}.", e.getMessage());
             e.printStackTrace();
             StoringTask.flush();
             System.exit(1);
+            return null;
         }
     }
 
-    void startTasks() {
+    protected void startTasks() {
         ReportingTask.startReportingTask(reportFrequency);
         StoringTask.startStoringTask(fileName);
     }
 
-    void startHandlingClients() {
-        LOGGER.info("Starting to handle clients.");
+    protected void startHandlingClients(ServerSocket serverSocket) {
+        log.info("Starting to handle clients.");
         ClientHandler clientHandler = new ClientHandler(serverSocket);
         while (!serverSocket.isClosed()) {
             if (clientHandler.isAcceptingNewClients(maxConcurrentConnections)) {

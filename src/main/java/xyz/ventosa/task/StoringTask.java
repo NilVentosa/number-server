@@ -1,7 +1,6 @@
 package xyz.ventosa.task;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,9 +12,8 @@ import java.util.TimerTask;
 
 import static xyz.ventosa.util.Constants.*;
 
+@Log4j2
 public class StoringTask extends TimerTask {
-    private static final Logger LOGGER = LogManager.getLogger("number-server");
-
     private static final Set<String> submittedNumbers = new HashSet<>();
 
     private static int duplicates;
@@ -40,12 +38,12 @@ public class StoringTask extends TimerTask {
     }
 
     public static void startStoringTask(String filename) {
-        LOGGER.info("Starting storing task.");
+        log.info("Starting storing task.");
         try {
             output = new PrintWriter(new FileWriter(filename, false), false);
         }
         catch (IOException e) {
-            LOGGER.error(e.getMessage());
+            log.error(e.getMessage());
             e.printStackTrace();
             flush();
         }
@@ -61,7 +59,7 @@ public class StoringTask extends TimerTask {
     }
 
     public static void flush() {
-        LOGGER.trace("Storing");
+        log.trace("Storing");
         output.flush();
     }
 }
