@@ -28,7 +28,7 @@ public class ClientHandler {
 
     private final Server server;
 
-    public void handleClients() {
+    public void handleNewClient() {
         Client client = acceptClient();
         if (client != null) {
             addToActiveClients(client);

@@ -48,7 +48,7 @@ class ClientTest {
     }
 
     @Test
-    void terminateClient_getClientId() {
+    void getClientId_returnsCorrectId() {
         client.terminateClient();
         Assertions.assertEquals(clientId, client.getClientId());
     }

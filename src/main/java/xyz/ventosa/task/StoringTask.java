@@ -29,12 +29,15 @@ public class StoringTask extends TimerTask {
     }
 
     public static synchronized void processNumber(String number) {
-        if (submittedNumbers.add(number)) {
-            output.println(number);
+        if (output != null) {
+            if (submittedNumbers.add(number)) {
+                output.println(number);
+            }
+            else {
+                duplicates++;
+            }
         }
-        else {
-            duplicates++;
-        }
+
     }
 
     public static void startStoringTask(String filename) {

@@ -46,7 +46,7 @@ public class Application {
         log.info("Starting to handle clients.");
         while (server.isServerSocketOpen()) {
             if (clientHandler.isAcceptingNewClients(maxConcurrentConnections)) {
-                clientHandler.handleClients();
+                clientHandler.handleNewClient();
             }
         }
     }
