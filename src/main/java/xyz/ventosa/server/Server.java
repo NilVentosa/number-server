@@ -43,7 +43,10 @@ public class Server {
     }
 
     public boolean isServerSocketOpen() {
-        return !serverSocket.isClosed();
+        if (serverSocket != null) {
+            return !serverSocket.isClosed();
+        }
+        return false;
     }
 
 }
