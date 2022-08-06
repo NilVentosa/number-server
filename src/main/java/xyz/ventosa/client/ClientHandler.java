@@ -1,34 +1,45 @@
 package xyz.ventosa.client;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
+import xyz.ventosa.Application;
+import xyz.ventosa.server.NumberServerException;
+import xyz.ventosa.server.Server;
 import xyz.ventosa.task.StoringTask;
 
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.SocketException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static xyz.ventosa.util.Util.*;
 
 @Log4j2
 @RequiredArgsConstructor
 public class ClientHandler {
     private final Map<Integer, Client> activeClientList = new ConcurrentHashMap<>();
 
+    @Setter
     private boolean acceptingNewClients = true;
 
-    private int clientCount = 1;
+    private int nextClientId = 1;
 
-    private final ServerSocket serverSocket;
+    private final Server server;
 
-    public void acceptNewClient() {
+    public void handleClients() {
+        Client client = acceptClient();
+        if (client != null) {
+            addToActiveClients(client);
+            startClient(client);
+        }
+    }
+
+    private Client acceptClient() {
+        Client client = null;
         try {
-            Client client = new Client(serverSocket.accept(), clientCount, this);
-            clientCount++;
-            activeClientList.put(client.getClientId(), client);
-            new Thread(client).start();
-            log.debug("New client with id: {}.", client.getClientId());
+            client = new Client(server.getServerSocket().accept(), nextClientId, this);
+            nextClientId++;
         }
         catch (SocketException e) {
             log.debug("Socket exception: {}.", e.getMessage());
@@ -36,12 +47,23 @@ public class ClientHandler {
         catch (IOException e) {
             log.debug("Exception: {}.", e.getMessage());
         }
+        return client;
+    }
+
+    private void addToActiveClients(Client client) {
+        log.debug("Adding client with id: {} to active clients.", client.getClientId());
+        activeClientList.put(client.getClientId(), client);
+    }
+
+    private void startClient(Client client) {
+        new Thread(client).start();
+        log.debug("New client with id: {}.", client.getClientId());
     }
 
     void removeFromActiveClients(int id) {
         Client client = activeClientList.remove(id);
         if (client != null) {
-            log.debug("Removing client with id: {} from active clients.", id);
+            log.debug("Removed client with id: {} from active clients.", id);
         }
     }
 
@@ -49,35 +71,22 @@ public class ClientHandler {
         return acceptingNewClients && activeClientList.size() < maxConcurrentConnections;
     }
 
-    private void terminateAllClients() {
+    public void terminateAllClients() {
         log.info("Terminating all clients.");
         for (Client client : activeClientList.values()) {
             client.terminateClient();
         }
     }
 
-    private void terminateServer() {
-        log.info("Terminating server");
-        StoringTask.flush();
-        try {
-            serverSocket.close();
+    protected void processClientInput(String input) throws NumberServerException {
+        if (isValidNumber(input)) {
+            StoringTask.processNumber(input);
         }
-        catch (SocketException e) {
-            log.debug("Socket exception: {}.", e.getMessage());
+        else if (isTerminate(input)) {
+            Application.terminateApplication();
         }
-        catch (IOException e) {
-            log.error("Exception in terminate: {}.", e.getMessage());
-            StoringTask.flush();
-            System.exit(1);
+        else {
+            throw new NumberServerException(String.format("Invalid input: %s", input));
         }
-    }
-
-    public void terminateApplication() {
-        log.info("Terminating task started.");
-        acceptingNewClients = false;
-        terminateAllClients();
-        terminateServer();
-        log.info("Terminating task ended successfully.");
-        System.exit(0);
     }
 }

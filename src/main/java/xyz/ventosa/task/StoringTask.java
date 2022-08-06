@@ -1,5 +1,7 @@
 package xyz.ventosa.task;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.FileWriter;
@@ -13,15 +15,13 @@ import java.util.TimerTask;
 import static xyz.ventosa.util.Constants.*;
 
 @Log4j2
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StoringTask extends TimerTask {
     private static final Set<String> submittedNumbers = new HashSet<>();
 
     private static int duplicates;
 
     private static PrintWriter output;
-
-    private StoringTask() {
-    }
 
     @Override
     public void run() {

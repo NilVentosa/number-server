@@ -3,17 +3,12 @@ package xyz.ventosa.client;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
-import xyz.ventosa.server.NumberServerException;
-import xyz.ventosa.task.StoringTask;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.SocketException;
-
-import static xyz.ventosa.util.Util.isTerminate;
-import static xyz.ventosa.util.Util.isValidNumber;
 
 @Log4j2
 @AllArgsConstructor
@@ -29,7 +24,7 @@ public class Client implements Runnable {
     public void run() {
         try (BufferedReader inputReader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()))) {
             while (!this.socket.isClosed()) {
-                processInput(inputReader.readLine());
+                clientHandler.processClientInput(inputReader.readLine());
             }
         }
         catch (IOException e) {
@@ -37,18 +32,6 @@ public class Client implements Runnable {
         }
         finally {
             terminateClient();
-        }
-    }
-
-    private void processInput(String input) throws NumberServerException {
-        if (isValidNumber(input)) {
-            StoringTask.processNumber(input);
-        }
-        else if (isTerminate(input)) {
-            clientHandler.terminateApplication();
-        }
-        else {
-            throw new NumberServerException(String.format("Invalid input: %s", input));
         }
     }
 

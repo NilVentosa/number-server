@@ -1,18 +1,18 @@
 package xyz.ventosa.task;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 @Log4j2
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReportingTask extends TimerTask {
     private int accumulatedNumbers;
 
     private int accumulatedDuplicates;
-
-    private ReportingTask() {
-    }
 
     @Override
     public void run() {

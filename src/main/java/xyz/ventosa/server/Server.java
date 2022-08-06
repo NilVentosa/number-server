@@ -1,60 +1,50 @@
 package xyz.ventosa.server;
 
-import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import xyz.ventosa.client.ClientHandler;
-import xyz.ventosa.task.ReportingTask;
 import xyz.ventosa.task.StoringTask;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-
+import java.net.SocketException;
 
 @Log4j2
-@AllArgsConstructor
+@NoArgsConstructor
 public class Server {
-    private final int port;
 
-    private final int maxConcurrentConnections;
+    @Getter
+    private ServerSocket serverSocket;
 
-    private final int reportFrequency;
-
-    private final String fileName;
-
-    public void startServer() {
-        ServerSocket serverSocket = startServerSocket();
-        startTasks();
-        startHandlingClients(serverSocket);
-    }
-
-    protected ServerSocket startServerSocket() {
+    public void startServer(int port) {
         try {
-            ServerSocket serverSocket = new ServerSocket(port);
+            serverSocket = new ServerSocket(port);
             log.info("Server listening on port: {}.", serverSocket.getLocalPort());
-            return serverSocket;
         }
         catch (IOException e) {
             log.error("Problem starting server: {}.", e.getMessage());
             e.printStackTrace();
-            StoringTask.flush();
             System.exit(1);
-            return null;
+        }
+
+    }
+
+    public void terminateServer() {
+        log.info("Terminating server");
+        try {
+            serverSocket.close();
+        }
+        catch (SocketException e) {
+            log.debug("Socket exception: {}.", e.getMessage());
+        }
+        catch (IOException e) {
+            log.error("Exception in terminate: {}.", e.getMessage());
+            System.exit(1);
         }
     }
 
-    protected void startTasks() {
-        ReportingTask.startReportingTask(reportFrequency);
-        StoringTask.startStoringTask(fileName);
-    }
-
-    protected void startHandlingClients(ServerSocket serverSocket) {
-        log.info("Starting to handle clients.");
-        ClientHandler clientHandler = new ClientHandler(serverSocket);
-        while (!serverSocket.isClosed()) {
-            if (clientHandler.isAcceptingNewClients(maxConcurrentConnections)) {
-                clientHandler.acceptNewClient();
-            }
-        }
+    public boolean isServerSocketOpen() {
+        return !serverSocket.isClosed();
     }
 
 }

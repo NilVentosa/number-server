@@ -1,5 +1,9 @@
 package xyz.ventosa.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Util {
 
     public static boolean isValidNumber(String input) {
@@ -22,6 +26,4 @@ public class Util {
         return "terminate".equals(line);
     }
 
-    private Util() {
-    }
 }

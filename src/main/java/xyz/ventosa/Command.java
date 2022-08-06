@@ -1,8 +1,8 @@
 package xyz.ventosa;
 
+import lombok.extern.log4j.Log4j2;
 import picocli.CommandLine;
 import picocli.CommandLine.*;
-import xyz.ventosa.server.Server;
 
 import static xyz.ventosa.util.Constants.*;
 
@@ -11,6 +11,7 @@ import static xyz.ventosa.util.Constants.*;
                      version = "1.0",
                      description = "Starts a number server.",
                      showDefaultValues = true)
+@Log4j2
 public class Command implements Runnable {
     @Option(names = { "-p", "--port" },
             description = "The port the server will listen to.",
@@ -38,7 +39,6 @@ public class Command implements Runnable {
 
     @Override
     public void run() {
-        Server server = new Server(port, maxConcurrentConnections, reportFrequency, fileName);
-        server.startServer();
+        Application.startApplication(port, maxConcurrentConnections, reportFrequency, fileName);
     }
 }
