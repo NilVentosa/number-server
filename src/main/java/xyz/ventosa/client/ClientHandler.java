@@ -18,6 +18,7 @@ import static xyz.ventosa.util.Util.*;
 @Log4j2
 @RequiredArgsConstructor
 public class ClientHandler {
+
     private final Map<Integer, Client> activeClientList = new ConcurrentHashMap<>();
 
     @Setter
@@ -60,7 +61,7 @@ public class ClientHandler {
         log.debug("New client with id: {}.", client.getClientId());
     }
 
-    void removeFromActiveClients(int id) {
+    protected void removeFromActiveClients(int id) {
         Client client = activeClientList.remove(id);
         if (client != null) {
             log.debug("Removed client with id: {} from active clients.", id);

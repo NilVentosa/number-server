@@ -1,65 +1,55 @@
 package xyz.ventosa.client;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import xyz.ventosa.server.Server;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class ClientTest {
-
     Socket socketMock;
-    ClientHandler clientHandlerMock;
-    int clientId;
+    Server server;
+    ClientHandler clientHandler;
+    ClientHandler clientHandlerSpy;
+    Client client;
+
+    int clientId = 1;
 
     @BeforeEach
     void setup() {
+        server = new Server();
         socketMock = Mockito.mock(Socket.class);
-        clientHandlerMock = Mockito.mock(ClientHandler.class);
-        clientId++;
+        clientHandler = new ClientHandler(server);
+        clientHandlerSpy = Mockito.spy(clientHandler);
+        client = new Client(socketMock, clientId, clientHandlerSpy);
     }
 
     @Test
-    void run_shortInput() throws IOException {
-        Client client = new Client(socketMock, clientId, clientHandlerMock);
-        Mockito.when(socketMock.getInputStream()).thenReturn(new ByteArrayInputStream("9".getBytes()));
+    void run_callsProcessClientInput() throws IOException {
+        Mockito.when(socketMock.getInputStream()).thenReturn(new ByteArrayInputStream("88888888".getBytes()));
         client.run();
-        Mockito.verify(socketMock).close();
+        Mockito.verify(clientHandlerSpy).processClientInput(Mockito.any());
     }
 
     @Test
-    void run_longInput() throws IOException {
-        Client client = new Client(socketMock, clientId, clientHandlerMock);
-        Mockito.when(socketMock.getInputStream()).thenReturn(new ByteArrayInputStream("9999999999".getBytes()));
-        client.run();
-        Mockito.verify(socketMock).close();
-    }
-
-    @Test
-    void run_emptyInput() throws IOException {
-        Client client = new Client(socketMock, clientId, clientHandlerMock);
-        Mockito.when(socketMock.getInputStream()).thenReturn(new ByteArrayInputStream(new byte[]{}));
-        client.run();
-        Mockito.verify(socketMock).close();
-    }
-
-    @Test
-    void run_terminate() throws IOException {
-        Client client = new Client(socketMock, clientId, clientHandlerMock);
-        Mockito.when(socketMock.getInputStream()).thenReturn(new ByteArrayInputStream("terminate".getBytes()));
-        client.run();
-        Mockito.verify(clientHandlerMock).terminateApplication();
-    }
-
-    @Test
-    void terminateClient() throws IOException {
-        Client client = new Client(socketMock, clientId, clientHandlerMock);
+    void terminateClient_callsSocketClose() throws IOException {
         client.terminateClient();
         Mockito.verify(socketMock).close();
-        Mockito.verify(clientHandlerMock).removeFromActiveClients(client.getClientId());
+    }
+
+    @Test
+    void terminateClient_callsRemoveFromActiveClients() {
+        client.terminateClient();
+        Mockito.verify(clientHandlerSpy).removeFromActiveClients(clientId);
+    }
+
+    @Test
+    void terminateClient_getClientId() {
+        client.terminateClient();
+        Assertions.assertEquals(clientId, client.getClientId());
     }
 }
