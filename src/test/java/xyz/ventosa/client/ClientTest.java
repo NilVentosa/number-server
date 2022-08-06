@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import xyz.ventosa.server.Server;
+import xyz.ventosa.server.NumberServer;
 import xyz.ventosa.util.Constants;
 
 import java.io.ByteArrayInputStream;
@@ -14,7 +14,7 @@ import java.net.Socket;
 
 class ClientTest {
     Socket socketMock;
-    Server server;
+    NumberServer numberServer;
     ClientHandler clientHandler;
     ClientHandler clientHandlerSpy;
     Client client;
@@ -23,16 +23,16 @@ class ClientTest {
 
     @BeforeEach
     void setup() {
-        server = new Server(Integer.parseInt(Constants.DEFAULT_PORT));
+        numberServer = new NumberServer(Integer.parseInt(Constants.DEFAULT_PORT));
         socketMock = Mockito.mock(Socket.class);
-        clientHandler = new ClientHandler(server);
+        clientHandler = new ClientHandler(numberServer);
         clientHandlerSpy = Mockito.spy(clientHandler);
         client = new Client(socketMock, clientId, clientHandlerSpy);
     }
 
     @AfterEach
     void tearDown() throws IOException {
-        server.getServerSocket().close();
+        numberServer.getServerSocket().close();
     }
 
     @Test

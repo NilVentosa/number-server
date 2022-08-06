@@ -11,26 +11,35 @@ import java.util.TimerTask;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReportingTask extends TimerTask {
 
-    private int accumulatedNumbers;
+    private static int accumulatedNumbers;
 
-    private int accumulatedDuplicates;
+    private static int accumulatedDuplicates;
 
     @Override
     public void run() {
+        logReport(false);
+    }
+
+    public static void startReportingTask(int frequency) {
+        log.info("Starting reporting task.");
+        new Timer().schedule(new ReportingTask(), frequency, frequency);
+    }
+
+    public static void logReport(boolean debug) {
         int totalNumbers = StoringTask.getSubmittedNumbersSize();
         int totalDuplicates = StoringTask.getDuplicates();
 
         int iterationNumbers = totalNumbers - accumulatedNumbers;
         int iterationDuplicates = totalDuplicates - accumulatedDuplicates;
 
-        log.info("Received {} unique numbers, {} duplicates. Unique total: {}", iterationNumbers, iterationDuplicates, totalNumbers);
+        if (debug) {
+            log.debug("Received {} unique numbers, {} duplicates. Unique total: {}", iterationNumbers, iterationDuplicates, totalNumbers);
+        } else {
+            log.info("Received {} unique numbers, {} duplicates. Unique total: {}", iterationNumbers, iterationDuplicates, totalNumbers);
+        }
+
 
         accumulatedNumbers = totalNumbers;
         accumulatedDuplicates = totalDuplicates;
-    }
-
-    public static void startReportingTask(int frequency) {
-        log.info("Starting reporting task.");
-        new Timer().schedule(new ReportingTask(), frequency, frequency);
     }
 }

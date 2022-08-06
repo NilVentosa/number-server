@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import xyz.ventosa.client.ClientHandler;
-import xyz.ventosa.server.Server;
+import xyz.ventosa.server.NumberServer;
 import xyz.ventosa.task.ReportingTask;
 import xyz.ventosa.task.StoringTask;
 
@@ -12,17 +12,17 @@ import xyz.ventosa.task.StoringTask;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Application {
 
-    private static Server server;
+    private static NumberServer numberServer;
 
     private static ClientHandler clientHandler;
 
     public static void startApplication(int port, int maxConcurrentConnections, int reportFrequency, String fileName) {
 
-        server = new Server(port);
+        numberServer = new NumberServer(port);
 
         startTasks(reportFrequency, fileName);
 
-        clientHandler = new ClientHandler(server);
+        clientHandler = new ClientHandler(numberServer);
         startHandlingClients(maxConcurrentConnections);
     }
 
@@ -30,8 +30,9 @@ public class Application {
         log.info("Terminating task started.");
         clientHandler.setAcceptingNewClients(false);
         clientHandler.terminateAllClients();
-        server.terminateServer();
+        numberServer.terminateServer();
         StoringTask.flush();
+        ReportingTask.logReport(true);
         log.info("Terminating task ended successfully.");
         System.exit(0);
     }
@@ -43,7 +44,7 @@ public class Application {
 
     private static void startHandlingClients(int maxConcurrentConnections) {
         log.info("Starting to handle clients.");
-        while (server.isServerSocketOpen()) {
+        while (numberServer.isServerSocketOpen()) {
             if (clientHandler.isAcceptingNewClients(maxConcurrentConnections)) {
                 clientHandler.handleNewClient();
             }

@@ -8,16 +8,16 @@ import java.net.ServerSocket;
 import java.net.SocketException;
 
 @Log4j2
-public class Server {
+public class NumberServer {
 
     @Getter
     private ServerSocket serverSocket;
 
-    public Server(int port) {
+    public NumberServer(int port) {
         this(port, new ServerSocketFactory());
     }
 
-    Server(int port, ServerSocketFactory serverSocketFactory) {
+    NumberServer(int port, ServerSocketFactory serverSocketFactory) {
         try {
             serverSocket = serverSocketFactory.createServerSocket(port);
             log.info("Server listening on port: {}.", serverSocket.getLocalPort());

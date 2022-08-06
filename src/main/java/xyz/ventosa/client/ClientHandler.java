@@ -5,7 +5,7 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import xyz.ventosa.Application;
 import xyz.ventosa.server.NumberServerException;
-import xyz.ventosa.server.Server;
+import xyz.ventosa.server.NumberServer;
 import xyz.ventosa.task.StoringTask;
 
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class ClientHandler {
 
     private int nextClientId = 1;
 
-    private final Server server;
+    private final NumberServer numberServer;
 
     public void handleNewClient() {
         Client client = acceptClient();
@@ -39,7 +39,7 @@ public class ClientHandler {
     private Client acceptClient() {
         Client client = null;
         try {
-            client = new Client(server.getServerSocket().accept(), nextClientId, this);
+            client = new Client(numberServer.getServerSocket().accept(), nextClientId, this);
             nextClientId++;
         }
         catch (SocketException e) {

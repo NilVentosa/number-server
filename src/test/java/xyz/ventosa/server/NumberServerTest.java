@@ -9,13 +9,13 @@ import org.mockito.Mockito;
 import java.io.IOException;
 import java.net.ServerSocket;
 
-class ServerTest {
+class NumberServerTest {
 
     int port = 3000;
 
     ServerSocketFactory serverSocketFactoryMock;
     ServerSocket serverSocketMock;
-    Server server;
+    NumberServer numberServer;
 
 
     @BeforeEach
@@ -26,27 +26,27 @@ class ServerTest {
 
     @AfterEach
     void tearDown() throws IOException {
-        server.getServerSocket().close();
+        numberServer.getServerSocket().close();
     }
 
     @Test
     void terminateServer_closesServerSocket() throws IOException {
         Mockito.when(serverSocketFactoryMock.createServerSocket(port)).thenReturn(serverSocketMock);
-        server = new Server(port, serverSocketFactoryMock);
-        server.terminateServer();
+        numberServer = new NumberServer(port, serverSocketFactoryMock);
+        numberServer.terminateServer();
         Mockito.verify(serverSocketMock).close();
     }
 
     @Test
     void isServerSocketOpen_true() {
-        server = new Server(port, new ServerSocketFactory());
-        Assertions.assertTrue(server.isServerSocketOpen());
+        numberServer = new NumberServer(port, new ServerSocketFactory());
+        Assertions.assertTrue(numberServer.isServerSocketOpen());
     }
 
     @Test
     void isServerSocketOpen_false() {
-        server = new Server(port, new ServerSocketFactory());
-        server.terminateServer();
-        Assertions.assertFalse(server.isServerSocketOpen());
+        numberServer = new NumberServer(port, new ServerSocketFactory());
+        numberServer.terminateServer();
+        Assertions.assertFalse(numberServer.isServerSocketOpen());
     }
 }
