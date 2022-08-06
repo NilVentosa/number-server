@@ -1,5 +1,6 @@
 package xyz.ventosa.client;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import xyz.ventosa.server.NumberServerException;
@@ -15,22 +16,14 @@ import static xyz.ventosa.util.Util.isTerminate;
 import static xyz.ventosa.util.Util.isValidNumber;
 
 @Log4j2
+@AllArgsConstructor
 public class Client implements Runnable {
     private final Socket socket;
 
     @Getter
     private final int clientId;
 
-    private static int clientInstanceCount;
-
     private final ClientHandler clientHandler;
-
-    public Client(Socket socket, ClientHandler clientHandler) {
-        clientInstanceCount++;
-        this.clientId = clientInstanceCount;
-        this.socket = socket;
-        this.clientHandler = clientHandler;
-    }
 
     @Override
     public void run() {
@@ -59,7 +52,7 @@ public class Client implements Runnable {
         }
     }
 
-    void terminateClient() {
+    protected void terminateClient() {
         try {
             if (!socket.isClosed()) {
                 log.debug("Closing socket for client with id: {}.", clientId);

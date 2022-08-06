@@ -1,5 +1,7 @@
 package xyz.ventosa.client;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import xyz.ventosa.task.StoringTask;
 
@@ -10,20 +12,20 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Log4j2
+@RequiredArgsConstructor
 public class ClientHandler {
     private final Map<Integer, Client> activeClientList = new ConcurrentHashMap<>();
 
     private boolean acceptingNewClients = true;
 
-    private final ServerSocket serverSocket;
+    private int clientCount = 1;
 
-    public ClientHandler(ServerSocket serverSocket) {
-        this.serverSocket = serverSocket;
-    }
+    private final ServerSocket serverSocket;
 
     public void acceptNewClient() {
         try {
-            Client client = new Client(serverSocket.accept(), this);
+            Client client = new Client(serverSocket.accept(), clientCount, this);
+            clientCount++;
             activeClientList.put(client.getClientId(), client);
             new Thread(client).start();
             log.debug("New client with id: {}.", client.getClientId());
