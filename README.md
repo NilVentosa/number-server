@@ -1,13 +1,26 @@
 # number-server
-## How to compile
 
-The project uses Java 11 and maven.
+The number-server will start listening for clients in a configured port.
+The number of simultaneous concurrent clients is limited.
+Those clients can send input to the server, and it will be handled using the following rules:
++ The input will be processed after an application-native newline sequence.
++ If the input is a nine decimal digit sequence it will be processed.
++ If the input is the word 'terminate' the server will disconnect all clients and shut down.
++ If the input is anything else the server will disconnect that client.
+
+Processed non duplicated lines will be added to a log file.
+
+Every 10 seconds the server will print a report of the input that has been processed.
+
+### How to compile
+
+The project has been developed using Java 11 and Maven 3.8.6.
 
 To compile the project to a jar file execute `mvn clean package`. The jar will be in the target folder.
 
-## Usage
+### Usage
 
-To run the server with default settings execute `java -jar number-server-1.0-SNAPSHOT.jar`. 
+To run the server with default settings execute `java -jar number-server-1.0.jar`. 
 The list of optional arguments and its defaults is below.
 
 -f, --file-name=<fileName> File name to print the log of numbers. Default: numbers.log
@@ -22,8 +35,18 @@ The list of optional arguments and its defaults is below.
 
 -V, --version Print version information and exit.
 
-## Task instructions
-Using any of the following programming language (taking performance into consideration): Java, Kotlin, Python, Go, write a server ("Application") that opens a socket
+### Assumptions
+
++ A line is considered to be terminated by any one of a line feed ('\n'), a carriage return ('\r'), 
+a carriage return followed immediately by a line feed, or by reaching the end-of-file (EOF).
++ Duplicated nine decimal digit sequences are considered a valid input. 
+For that reason they don't cause client disconnection. But they are not written to the file.
++ New clients are allowed to connect after reaching the active client limit, 
+but no input is processed from that client until an active client disconnects.
+
+# Task instructions
+Using any of the following programming language (taking performance into consideration): Java, Kotlin, Python, Go, 
+write a server ("Application") that opens a socket
 and restricts input to at most 5 concurrent clients. Clients will connect to the Application and
 write one or more numbers of 9 digit numbers, each number followed by a application-native newline
 sequence, and then close the connection. The Application must write a de- duplicated list of
