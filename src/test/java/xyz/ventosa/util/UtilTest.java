@@ -8,18 +8,18 @@ class UtilTest {
 
     @Test
     void isValidNumber_valid() {
-        assertTrue(Util.isValidNumber("000000000"));
-        assertTrue(Util.isValidNumber("000000001"));
-        assertTrue(Util.isValidNumber("123456789"));
+        assertEquals(0, Util.getValidNumber("000000000"));
+        assertEquals(1, Util.getValidNumber("000000001"));
+        assertEquals(123456789, Util.getValidNumber("123456789"));
     }
 
     @Test
     void isValidNumber_invalid() {
-        assertFalse(Util.isValidNumber("2"));
-        assertFalse(Util.isValidNumber("d"));
-        assertFalse(Util.isValidNumber("carbonara"));
-        assertFalse(Util.isValidNumber("TERMINATE"));
-        assertFalse(Util.isValidNumber(null));
+        assertNull(Util.getValidNumber("2"));
+        assertNull(Util.getValidNumber("d"));
+        assertNull(Util.getValidNumber("carbonara"));
+        assertNull(Util.getValidNumber("TERMINATE"));
+        assertNull(Util.getValidNumber(null));
     }
 
     @Test

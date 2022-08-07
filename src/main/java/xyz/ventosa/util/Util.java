@@ -6,20 +6,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Util {
 
-    public static boolean isValidNumber(String input) {
+    public static Integer getValidNumber(String input) {
+        int result;
         if (input == null) {
-            return false;
+            return null;
         }
         if (input.length() != 9) {
-            return false;
+            return null;
         }
         try {
-            Integer.parseInt(input);
+            result = Integer.parseInt(input);
         }
         catch (NumberFormatException ignore) {
-            return false;
+            return null;
         }
-        return true;
+        return result;
     }
 
     public static boolean isTerminate(String line) {

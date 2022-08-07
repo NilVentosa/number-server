@@ -79,8 +79,9 @@ public class ClientHandler implements Runnable {
     }
 
     protected void processClientInput(String input) throws NumberServerException {
-        if (isValidNumber(input)) {
-            StoringTask.processNumber(Integer.parseInt(input));
+        Integer number = getValidNumber(input);
+        if (number != null) {
+            StoringTask.processNumber(number);
         }
         else if (isTerminate(input)) {
             application.terminateApplication();
