@@ -65,4 +65,9 @@ public class StoringTask extends TimerTask {
         log.trace("Storing");
         output.flush();
     }
+
+    public static void stopStoringTask() {
+        output.flush();
+        output.close();
+    }
 }

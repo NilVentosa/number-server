@@ -31,7 +31,7 @@ public class Application {
         clientHandler.setAcceptingNewClients(false);
         clientHandler.terminateAllClients();
         numberServer.terminateServer();
-        StoringTask.flush();
+        StoringTask.stopStoringTask();
         ReportingTask.logReport(true);
         log.info("Terminating task ended successfully.");
         System.exit(0);
