@@ -12,11 +12,18 @@ Processed non duplicated lines will be added to a log file.
 
 Every 10 seconds by default the server will print a report of the input that has been processed.
 
-### How to compile
+### How to compile and run
 
 The project has been developed using Java 11 and Maven 3.8.6.
 
-To compile the project to a jar file execute `mvn clean package`. The jar will be in the target folder.
+`git clone https://github.com/NilVentosa/number-server.git`  
+`cd number-server`  
+`mvn clean package`  
+`java -jar target/number-server-1.0.jar`
+
+### Download
+
+You can also download it from [here](https://github.com/NilVentosa/number-server/releases/tag/v1.0).
 
 ### Usage
 
@@ -43,6 +50,7 @@ a carriage return followed immediately by a line feed, or by reaching the end-of
 For that reason they don't cause client disconnection. But they are not written to the file.
 + New clients are allowed to connect after reaching the active client limit, 
 but no input is processed from that client until an active client disconnects.
++ Numbers will be stored in the log file without leading zeroes
 
 # Task instructions
 Using any of the following programming language (taking performance into consideration): Java, Kotlin, Python, Go, 

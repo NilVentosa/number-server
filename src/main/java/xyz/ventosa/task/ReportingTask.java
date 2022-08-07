@@ -32,6 +32,7 @@ public class ReportingTask extends TimerTask {
         int iterationNumbers = totalNumbers - accumulatedNumbers;
         int iterationDuplicates = totalDuplicates - accumulatedDuplicates;
 
+        // When debug is true it will log a final report before terminating
         if (debug) {
             log.debug("Received {} unique numbers, {} duplicates. Unique total: {}", iterationNumbers, iterationDuplicates, totalNumbers);
         } else {
