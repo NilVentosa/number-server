@@ -1,7 +1,7 @@
 # number-server
 
 The number-server will start listening for clients in a configured port.
-The number of simultaneous concurrent clients is limited.
+The number of simultaneous concurrent clients is limited and configurable.
 Those clients can send input to the server, and it will be handled using the following rules:
 + The input will be processed after an application-native newline sequence.
 + If the input is a nine decimal digit sequence it will be processed.
@@ -10,7 +10,7 @@ Those clients can send input to the server, and it will be handled using the fol
 
 Processed non duplicated lines will be added to a log file.
 
-Every 10 seconds the server will print a report of the input that has been processed.
+Every 10 seconds by default the server will print a report of the input that has been processed.
 
 ### How to compile
 

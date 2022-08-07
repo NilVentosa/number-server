@@ -81,7 +81,7 @@ public class ClientHandler {
 
     protected void processClientInput(String input) throws NumberServerException {
         if (isValidNumber(input)) {
-            StoringTask.processNumber(input);
+            StoringTask.processNumber(Integer.parseInt(input));
         }
         else if (isTerminate(input)) {
             Application.terminateApplication();

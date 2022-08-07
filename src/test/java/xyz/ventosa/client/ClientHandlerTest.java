@@ -109,7 +109,7 @@ class ClientHandlerTest {
 
         try (MockedStatic<StoringTask> mockedStatic = Mockito.mockStatic(StoringTask.class)) {
             clientHandler.processClientInput("123456789");
-            mockedStatic.verify(() -> StoringTask.processNumber("123456789"));
+            mockedStatic.verify(() -> StoringTask.processNumber(123456789));
         }
     }
 

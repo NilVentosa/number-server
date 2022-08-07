@@ -17,7 +17,7 @@ import static xyz.ventosa.util.Constants.*;
 @Log4j2
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StoringTask extends TimerTask {
-    private static final Set<String> submittedNumbers = new HashSet<>();
+    private static final Set<Integer> submittedNumbers = new HashSet<>();
 
     private static int duplicates;
 
@@ -28,7 +28,7 @@ public class StoringTask extends TimerTask {
         flush();
     }
 
-    public static synchronized void processNumber(String number) {
+    public static synchronized void processNumber(int number) {
         if (output != null) {
             if (submittedNumbers.add(number)) {
                 output.println(number);
