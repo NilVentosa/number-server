@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import xyz.ventosa.Application;
 import xyz.ventosa.server.NumberServer;
 import xyz.ventosa.util.Constants;
 
@@ -25,7 +26,7 @@ class ClientTest {
     void setup() {
         numberServer = new NumberServer(Integer.parseInt(Constants.DEFAULT_PORT));
         socketMock = Mockito.mock(Socket.class);
-        clientHandler = new ClientHandler(numberServer);
+        clientHandler = new ClientHandler(new Application(4000, 5, 10000, "numbers.log"));
         clientHandlerSpy = Mockito.spy(clientHandler);
         client = new Client(socketMock, clientId, clientHandlerSpy);
     }

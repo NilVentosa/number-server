@@ -46,9 +46,9 @@ public class StoringTask extends TimerTask {
             output = new PrintWriter(new FileWriter(filename, false), false);
         }
         catch (IOException e) {
-            log.error(e.getMessage());
+            log.error(String.format("Log file %s could not be created: %s", filename, e.getMessage()));
             e.printStackTrace();
-            flush();
+            System.exit(1);
         }
         new Timer().schedule(new StoringTask(), FLUSHING_FREQUENCY, FLUSHING_FREQUENCY);
     }

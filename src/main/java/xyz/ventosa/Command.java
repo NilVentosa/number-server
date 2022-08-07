@@ -18,13 +18,13 @@ public class Command implements Runnable {
             defaultValue = DEFAULT_PORT)
     private int port;
 
-    @Option(names = { "-m", "--max-connections" },
-            description = "The maximum number of concurrent clients.",
+    @Option(names = { "-m", "--max-clients" },
+            description = "The maximum number of concurrent clients. Minimum value 1.",
             defaultValue = DEFAULT_MAX_CONCURRENT_CLIENTS)
-    private int maxConcurrentConnections;
+    private int maxConcurrentClients;
 
     @Option(names = { "-r", "--report-frequency" },
-            description = "How often (in milliseconds) the report will be printed.",
+            description = "How often (in milliseconds) the report will be printed. Minimum value 100.",
             defaultValue = DEFAULT_REPORT_FREQUENCY)
     private int reportFrequency;
 
@@ -39,6 +39,15 @@ public class Command implements Runnable {
 
     @Override
     public void run() {
-        Application.startApplication(port, maxConcurrentConnections, reportFrequency, fileName);
+        if (maxConcurrentClients < 1) {
+            log.error("Max concurrent clients cannot be less than 1.");
+            System.exit(1);
+        }
+        if (reportFrequency < 100) {
+            log.error("Report frequency cannot be less than 100.");
+            System.exit(1);
+        }
+
+        new Application(port, maxConcurrentClients, reportFrequency, fileName).startApplication();
     }
 }

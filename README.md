@@ -25,11 +25,11 @@ The list of optional arguments and its defaults is below.
 
 -f, --file-name=<fileName> File name to print the log of numbers. Default: numbers.log
 
--m, --max-connections=<maxConcurrentConnections> The maximum number of concurrent clients. Default: 5
+-m, --max-clients=<maxConcurrentClients> The maximum number of concurrent clients. Default: 5 Minimum: 1
 
 -p, --port=<port> The port the server will listen to. Default: 4000
 
--r, --report-frequency=<reportFrequency> How often (in milliseconds) the report will be printed. Default: 10000
+-r, --report-frequency=<reportFrequency> How often (in milliseconds) the report will be printed. Default: 10000 Minimum: 100
 
 -h, --help Show this help message and exit.
 

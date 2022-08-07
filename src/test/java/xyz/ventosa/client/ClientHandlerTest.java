@@ -32,6 +32,8 @@ class ClientHandlerTest {
 
     Socket socketMock;
 
+    ClientHandler clientHandler;
+
     @BeforeEach
     void setup() {
         numberServer = new NumberServer(Integer.parseInt(Constants.DEFAULT_PORT));
@@ -39,6 +41,7 @@ class ClientHandlerTest {
         serverSocketMock = Mockito.mock(ServerSocket.class);
         storingTask = Mockito.mock(StoringTask.class);
         socketMock = Mockito.mock(Socket.class);
+        clientHandler = new ClientHandler(new Application(4000, 5, 10000, "numbers.log"));
     }
 
     @AfterEach
@@ -48,24 +51,24 @@ class ClientHandlerTest {
 
     @Test
     void isAcceptingNewClients_true() {
-        ClientHandler clientHandler = new ClientHandler(numberServer);
         assertTrue(clientHandler.isAcceptingNewClients(1));
     }
 
     @Test
     void isAcceptingNewClients_false() {
-        ClientHandler clientHandler = new ClientHandler(numberServer);
         assertFalse(clientHandler.isAcceptingNewClients(0));
     }
 
     @Test
     void terminateAllClients_callsRemoveFromActiveClients() throws IOException {
+        Application applicationMock = Mockito.mock(Application.class);
+        ClientHandler ch = new ClientHandler(applicationMock);
 
-        ClientHandler clientHandler = new ClientHandler(numberServerMock);
         Socket socketMock = Mockito.mock(Socket.class);
-        ClientHandler clientHandlerSpy = Mockito.spy(clientHandler);
+        ClientHandler clientHandlerSpy = Mockito.spy(ch);
 
         Mockito.doNothing().when(storingTask).run();
+        Mockito.when(applicationMock.getNumberServer()).thenReturn(numberServerMock);
         Mockito.when(numberServerMock.getServerSocket()).thenReturn(serverSocketMock);
         Mockito.when(serverSocketMock.accept()).thenReturn(socketMock);
         Mockito.when(socketMock.getInputStream()).thenReturn(new ByteArrayInputStream("123456789".getBytes()));
@@ -82,31 +85,25 @@ class ClientHandlerTest {
     @ParameterizedTest
     @ValueSource(strings = { "9999999999", "", "1", "carbonara", "d", "TERminate", "terminates" })
     void processClientInput_invalidInputsThrowException(String clientInput) {
-        ClientHandler clientHandler = new ClientHandler(numberServer);
         assertThrows(NumberServerException.class, () -> clientHandler.processClientInput(clientInput));
 
     }
 
     @Test
     void processClientInput_nullInputThrowsException() {
-        ClientHandler clientHandler = new ClientHandler(numberServer);
         assertThrows(NumberServerException.class, () -> clientHandler.processClientInput(null));
     }
 
     @Test
     void processClientInput_terminate() throws IOException {
-        ClientHandler clientHandler = new ClientHandler(numberServer);
-
-        try (MockedStatic<Application> mockedStatic = Mockito.mockStatic(Application.class)) {
-            clientHandler.processClientInput("terminate");
-            mockedStatic.verify(Application::terminateApplication);
-        }
+        Application applicationMock = Mockito.mock(Application.class);
+        ClientHandler ch = new ClientHandler(applicationMock);
+        ch.processClientInput("terminate");
+        Mockito.verify(applicationMock).terminateApplication();
     }
 
     @Test
     void processClientInput_correctInput() throws IOException {
-        ClientHandler clientHandler = new ClientHandler(numberServer);
-
         try (MockedStatic<StoringTask> mockedStatic = Mockito.mockStatic(StoringTask.class)) {
             clientHandler.processClientInput("123456789");
             mockedStatic.verify(() -> StoringTask.processNumber(123456789));

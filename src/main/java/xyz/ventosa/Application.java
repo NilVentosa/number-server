@@ -1,7 +1,6 @@
 package xyz.ventosa;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import xyz.ventosa.client.ClientHandler;
 import xyz.ventosa.server.NumberServer;
@@ -9,24 +8,37 @@ import xyz.ventosa.task.ReportingTask;
 import xyz.ventosa.task.StoringTask;
 
 @Log4j2
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class Application {
 
-    private static NumberServer numberServer;
+    @Getter
+    private NumberServer numberServer = null;
 
-    private static ClientHandler clientHandler;
+    @Getter
+    private ClientHandler clientHandler = null;
 
-    public static void startApplication(int port, int maxConcurrentConnections, int reportFrequency, String fileName) {
+    private final int port;
+
+    @Getter
+    private final int maxConcurrentClients;
+
+    private final int reportFrequency;
+
+    private final String fileName;
+
+    public void startApplication() {
 
         numberServer = new NumberServer(port);
 
-        startTasks(reportFrequency, fileName);
+        ReportingTask.startReportingTask(reportFrequency);
+        StoringTask.startStoringTask(fileName);
 
-        clientHandler = new ClientHandler(numberServer);
-        startHandlingClients(maxConcurrentConnections);
+        clientHandler = new ClientHandler(this);
+        startClientHandler(clientHandler);
+
     }
 
-    public static void terminateApplication() {
+    public void terminateApplication() {
         log.info("Terminating task started.");
         clientHandler.setAcceptingNewClients(false);
         clientHandler.terminateAllClients();
@@ -37,17 +49,7 @@ public class Application {
         System.exit(0);
     }
 
-    private static void startTasks(int reportFrequency, String fileName) {
-        ReportingTask.startReportingTask(reportFrequency);
-        StoringTask.startStoringTask(fileName);
-    }
-
-    private static void startHandlingClients(int maxConcurrentConnections) {
-        log.info("Starting to handle clients.");
-        while (numberServer.isServerSocketOpen()) {
-            if (clientHandler.isAcceptingNewClients(maxConcurrentConnections)) {
-                clientHandler.handleNewClient();
-            }
-        }
+    private void startClientHandler(ClientHandler ch) {
+        new Thread(ch).start();
     }
 }

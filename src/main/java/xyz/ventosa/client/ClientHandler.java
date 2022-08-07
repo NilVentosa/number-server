@@ -5,7 +5,6 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import xyz.ventosa.Application;
 import xyz.ventosa.server.NumberServerException;
-import xyz.ventosa.server.NumberServer;
 import xyz.ventosa.task.StoringTask;
 
 import java.io.IOException;
@@ -17,7 +16,7 @@ import static xyz.ventosa.util.Util.*;
 
 @Log4j2
 @RequiredArgsConstructor
-public class ClientHandler {
+public class ClientHandler implements Runnable {
 
     private final Map<Integer, Client> activeClientList = new ConcurrentHashMap<>();
 
@@ -26,7 +25,7 @@ public class ClientHandler {
 
     private int nextClientId = 1;
 
-    private final NumberServer numberServer;
+    private final Application application;
 
     public void handleNewClient() {
         Client client = acceptClient();
@@ -39,7 +38,7 @@ public class ClientHandler {
     private Client acceptClient() {
         Client client = null;
         try {
-            client = new Client(numberServer.getServerSocket().accept(), nextClientId, this);
+            client = new Client(application.getNumberServer().getServerSocket().accept(), nextClientId, this);
             nextClientId++;
         }
         catch (SocketException e) {
@@ -68,8 +67,8 @@ public class ClientHandler {
         }
     }
 
-    public boolean isAcceptingNewClients(int maxConcurrentConnections) {
-        return acceptingNewClients && activeClientList.size() < maxConcurrentConnections;
+    public boolean isAcceptingNewClients(int maxConcurrentClients) {
+        return acceptingNewClients && activeClientList.size() < maxConcurrentClients;
     }
 
     public void terminateAllClients() {
@@ -84,13 +83,23 @@ public class ClientHandler {
             StoringTask.processNumber(Integer.parseInt(input));
         }
         else if (isTerminate(input)) {
-            Application.terminateApplication();
+            application.terminateApplication();
         }
         else if (input == null) {
             throw new NumberServerException("Connection closed by the client");
         }
         else {
             throw new NumberServerException(String.format("Invalid input: %s", input));
+        }
+    }
+
+    @Override
+    public void run() {
+        log.info("Starting to handle clients.");
+        while (application.getNumberServer().isServerSocketOpen()) {
+            if (isAcceptingNewClients(application.getMaxConcurrentClients())) {
+                handleNewClient();
+            }
         }
     }
 }
