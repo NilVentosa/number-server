@@ -2,7 +2,7 @@ package xyz.ventosa;
 
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
-import xyz.ventosa.client.ClientHandler;
+import xyz.ventosa.server.SocketHandler;
 import xyz.ventosa.server.NumberServer;
 import xyz.ventosa.task.ReportingTask;
 import xyz.ventosa.task.StoringTask;
@@ -15,7 +15,7 @@ public class Application {
     private NumberServer numberServer = null;
 
     @Getter
-    private ClientHandler clientHandler = null;
+    private SocketHandler socketHandler = null;
 
     private final int port;
 
@@ -33,23 +33,19 @@ public class Application {
         ReportingTask.startReportingTask(reportFrequency);
         StoringTask.startStoringTask(fileName);
 
-        clientHandler = new ClientHandler(this);
-        startClientHandler(clientHandler);
+        socketHandler = new SocketHandler(this);
+        new Thread(socketHandler).start();
 
     }
 
     public void terminateApplication() {
         log.info("Terminating task started.");
-        clientHandler.setAcceptingNewClients(false);
-        clientHandler.terminateAllClients();
+        socketHandler.setAcceptingNewClients(false);
+        socketHandler.terminateAllClients();
         numberServer.terminateServer();
         StoringTask.stopStoringTask();
         ReportingTask.logReport(true);
         log.info("Terminating task ended successfully.");
         System.exit(0);
-    }
-
-    private void startClientHandler(ClientHandler ch) {
-        new Thread(ch).start();
     }
 }

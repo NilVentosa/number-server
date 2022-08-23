@@ -2,14 +2,15 @@ package xyz.ventosa.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import xyz.ventosa.server.NumberServerException;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Util {
 
-    public static Integer getValidNumber(String input) {
+    public static Integer getValidNumber(String input) throws NumberServerException {
         int result;
         if (input == null) {
-            return null;
+            throw new NumberServerException("Connection closed by the client");
         }
         if (input.length() != 9) {
             return null;
@@ -21,10 +22,6 @@ public class Util {
             return null;
         }
         return result;
-    }
-
-    public static boolean isTerminate(String line) {
-        return "terminate".equals(line);
     }
 
 }
