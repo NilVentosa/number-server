@@ -1,27 +1,20 @@
-package xyz.ventosa.client;
+package xyz.ventosa.server;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import xyz.ventosa.Application;
-import xyz.ventosa.server.NumberServerException;
-import xyz.ventosa.server.NumberServer;
-import xyz.ventosa.server.SocketHandler;
 import xyz.ventosa.task.StoringTask;
 import xyz.ventosa.util.Constants;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ClientHandlerTest {
+class ConnectionHandlerTest {
 
     NumberServer numberServer;
 
@@ -33,7 +26,7 @@ class ClientHandlerTest {
 
     Socket socketMock;
 
-    SocketHandler clientHandler;
+    ConnectionHandler connectionHandler;
 
     @BeforeEach
     void setup() {
@@ -42,7 +35,7 @@ class ClientHandlerTest {
         serverSocketMock = Mockito.mock(ServerSocket.class);
         storingTask = Mockito.mock(StoringTask.class);
         socketMock = Mockito.mock(Socket.class);
-        clientHandler = new SocketHandler(new Application(4000, 5, 10000, "numbers.log"));
+        connectionHandler = new ConnectionHandler(new Application(4000, 5, 10000, "numbers.log"));
     }
 
     @AfterEach
@@ -51,22 +44,22 @@ class ClientHandlerTest {
     }
 
     @Test
-    void isAcceptingNewClients_true() {
-        assertTrue(clientHandler.isAcceptingNewClients(1));
+    void isAcceptingNewConnections_true() {
+        assertTrue(connectionHandler.isAcceptingNewConnections(1));
     }
 
     @Test
-    void isAcceptingNewClients_false() {
-        assertFalse(clientHandler.isAcceptingNewClients(0));
+    void isAcceptingNewConnections_false() {
+        assertFalse(connectionHandler.isAcceptingNewConnections(0));
     }
 
 //    @Test
-//    void terminateAllClients_callsRemoveFromActiveClients() throws IOException {
+//    void terminateAllConnections_callsRemoveFromActiveConnections() throws IOException {
 //        Application applicationMock = Mockito.mock(Application.class);
 //        SocketHandler ch = new SocketHandler(applicationMock);
 //
 //        Socket socketMock = Mockito.mock(Socket.class);
-//        SocketHandler clientHandlerSpy = Mockito.spy(ch);
+//        SocketHandler connectionHandlerSpy = Mockito.spy(ch);
 //
 //        Mockito.doNothing().when(storingTask).run();
 //        Mockito.when(applicationMock.getNumberServer()).thenReturn(numberServerMock);
@@ -74,29 +67,29 @@ class ClientHandlerTest {
 //        Mockito.when(serverSocketMock.accept()).thenReturn(socketMock);
 //        Mockito.when(socketMock.getInputStream()).thenReturn(new ByteArrayInputStream("123456789".getBytes()));
 //
-//        clientHandlerSpy.handleNewConnection();
-//        clientHandlerSpy.handleNewConnection();
-//        clientHandlerSpy.terminateAllClients();
+//        connectionHandlerSpy.handleNewConnection();
+//        connectionHandlerSpy.handleNewConnection();
+//        connectionHandlerSpy.terminateAllconnections();
 //
-//        Mockito.verify(clientHandlerSpy, Mockito.atLeast(1)).removeFromActiveClients(1);
-//        Mockito.verify(clientHandlerSpy, Mockito.atLeast(1)).removeFromActiveClients(2);
+//        Mockito.verify(connectionHandlerSpy, Mockito.atLeast(1)).removeFromActiveconnections(1);
+//        Mockito.verify(connectionHandlerSpy, Mockito.atLeast(1)).removeFromActiveconnections(2);
 //
 //    }
 //
 //    @ParameterizedTest
 //    @ValueSource(strings = { "9999999999", "", "1", "carbonara", "d", "TERminate", "terminates" })
-//    void processClientInput_invalidInputsThrowException(String clientInput) {
-//        assertThrows(NumberServerException.class, () -> clientHandler.processInput(clientInput));
+//    void processconnectionInput_invalidInputsThrowException(String connectionInput) {
+//        assertThrows(NumberServerException.class, () -> connectionHandler.processInput(connectionInput));
 //
 //    }
 //
 //    @Test
-//    void processClientInput_nullInputThrowsException() {
-//        assertThrows(NumberServerException.class, () -> clientHandler.processInput(null));
+//    void processconnectionInput_nullInputThrowsException() {
+//        assertThrows(NumberServerException.class, () -> connectionHandler.processInput(null));
 //    }
 //
 //    @Test
-//    void processClientInput_terminate() throws IOException {
+//    void processconnectionInput_terminate() throws IOException {
 //        Application applicationMock = Mockito.mock(Application.class);
 //        SocketHandler ch = new SocketHandler(applicationMock);
 //        ch.processInput("terminate");
@@ -104,9 +97,9 @@ class ClientHandlerTest {
 //    }
 //
 //    @Test
-//    void processClientInput_correctInput() throws IOException {
+//    void processconnectionInput_correctInput() throws IOException {
 //        try (MockedStatic<StoringTask> mockedStatic = Mockito.mockStatic(StoringTask.class)) {
-//            clientHandler.processInput("123456789");
+//            connectionHandler.processInput("123456789");
 //            mockedStatic.verify(() -> StoringTask.processNumber(123456789));
 //        }
 //    }

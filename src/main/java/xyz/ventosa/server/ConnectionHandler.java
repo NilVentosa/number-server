@@ -18,24 +18,24 @@ import static xyz.ventosa.util.Util.*;
 
 @Log4j2
 @RequiredArgsConstructor
-public class SocketHandler implements Runnable {
+public class ConnectionHandler implements Runnable {
 
-    private final Map<Integer, Socket> activeClientList = new ConcurrentHashMap<>();
+    private final Map<Integer, Socket> activeConnectionList = new ConcurrentHashMap<>();
 
     @Setter
-    private boolean acceptingNewClients = true;
+    private boolean acceptingNewConnections = true;
 
-    private int nextClientId = 0;
+    private int nextConnectionId = 0;
 
     private final Application application;
 
     public void handleNewConnection() {
         try {
             Socket socket = application.getNumberServer().getServerSocket().accept();
-            nextClientId++;
-            log.debug("Adding client with id: {} to active clients.", nextClientId);
-            activeClientList.put(nextClientId, socket);
-            startConnection(nextClientId);
+            nextConnectionId++;
+            log.debug("Adding connection with id: {} to active connections.", nextConnectionId);
+            activeConnectionList.put(nextConnectionId, socket);
+            startConnection(nextConnectionId);
         }
         catch (SocketException e) {
             log.debug("Socket exception: {}.", e.getMessage());
@@ -47,8 +47,8 @@ public class SocketHandler implements Runnable {
 
     private void startConnection(Integer id) {
         new Thread(() -> {
-            try (BufferedReader inputReader = new BufferedReader(new InputStreamReader(activeClientList.get(id).getInputStream()))) {
-                while (!activeClientList.get(id).isClosed()) {
+            try (BufferedReader inputReader = new BufferedReader(new InputStreamReader(activeConnectionList.get(id).getInputStream()))) {
+                while (!activeConnectionList.get(id).isClosed()) {
                     this.processInput(inputReader.readLine());
                 }
             }
@@ -59,34 +59,34 @@ public class SocketHandler implements Runnable {
                 terminateConnection(id);
             }
         }).start();
-        log.debug("New client with id: {}.", id);
+        log.debug("New connection with id: {}.", id);
     }
 
     protected void terminateConnection(Integer id) {
         try {
-            if (!activeClientList.get(id).isClosed()) {
-                log.debug("Closing socket for client with id: {}.", id);
-                activeClientList.get(id).close();
+            if (!activeConnectionList.get(id).isClosed()) {
+                log.debug("Closing socket for connection with id: {}.", id);
+                activeConnectionList.get(id).close();
             }
-            if (activeClientList.remove(id) != null) {
-                log.debug("Removed client with id: {} from active clients.", id);
+            if (activeConnectionList.remove(id) != null) {
+                log.debug("Removed connection with id: {} from active connections.", id);
             }
         }
         catch (SocketException e) {
             log.debug("Socket exception: {}.", e.getMessage());
         }
         catch (IOException e) {
-            log.debug("Exception in endClient: {}.", e.getMessage());
+            log.debug("Exception in endConnection: {}.", e.getMessage());
         }
     }
 
-    public boolean isAcceptingNewClients(int maxConcurrentClients) {
-        return acceptingNewClients && activeClientList.size() < maxConcurrentClients;
+    public boolean isAcceptingNewConnections(int maxConcurrentConnections) {
+        return acceptingNewConnections && activeConnectionList.size() < maxConcurrentConnections;
     }
 
-    public void terminateAllClients() {
-        log.info("Terminating all clients.");
-        for (Integer id : activeClientList.keySet()) {
+    public void terminateAllConnections() {
+        log.info("Terminating all connections.");
+        for (Integer id : activeConnectionList.keySet()) {
             terminateConnection(id);
         }
     }
@@ -106,9 +106,9 @@ public class SocketHandler implements Runnable {
 
     @Override
     public void run() {
-        log.info("Starting to handle clients.");
+        log.info("Starting to handle connections.");
         while (application.getNumberServer().isServerSocketOpen()) {
-            if (isAcceptingNewClients(application.getMaxConcurrentClients())) {
+            if (isAcceptingNewConnections(application.getMaxConcurrentConnections())) {
                 handleNewConnection();
             }
         }

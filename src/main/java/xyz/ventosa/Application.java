@@ -2,7 +2,7 @@ package xyz.ventosa;
 
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
-import xyz.ventosa.server.SocketHandler;
+import xyz.ventosa.server.ConnectionHandler;
 import xyz.ventosa.server.NumberServer;
 import xyz.ventosa.task.ReportingTask;
 import xyz.ventosa.task.StoringTask;
@@ -15,12 +15,12 @@ public class Application {
     private NumberServer numberServer = null;
 
     @Getter
-    private SocketHandler socketHandler = null;
+    private ConnectionHandler connectionHandler = null;
 
     private final int port;
 
     @Getter
-    private final int maxConcurrentClients;
+    private final int maxConcurrentConnections;
 
     private final int reportFrequency;
 
@@ -33,15 +33,15 @@ public class Application {
         ReportingTask.startReportingTask(reportFrequency);
         StoringTask.startStoringTask(fileName);
 
-        socketHandler = new SocketHandler(this);
-        new Thread(socketHandler).start();
+        connectionHandler = new ConnectionHandler(this);
+        new Thread(connectionHandler).start();
 
     }
 
     public void terminateApplication() {
         log.info("Terminating task started.");
-        socketHandler.setAcceptingNewClients(false);
-        socketHandler.terminateAllClients();
+        connectionHandler.setAcceptingNewConnections(false);
+        connectionHandler.terminateAllConnections();
         numberServer.terminateServer();
         StoringTask.stopStoringTask();
         ReportingTask.logReport(true);
