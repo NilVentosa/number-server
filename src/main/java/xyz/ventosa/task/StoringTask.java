@@ -7,8 +7,6 @@ import lombok.extern.log4j.Log4j2;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,9 +15,10 @@ import static xyz.ventosa.util.Constants.*;
 @Log4j2
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StoringTask extends TimerTask {
-    private static final Set<Integer> submittedNumbers = new HashSet<>();
+    private static final boolean[] submittedNumbers = new boolean[1000000000];
 
     private static int duplicates;
+    private static int submitted;
 
     private static PrintWriter output;
 
@@ -30,7 +29,9 @@ public class StoringTask extends TimerTask {
 
     public static synchronized void processNumber(int number) {
         if (output != null) {
-            if (submittedNumbers.add(number)) {
+            if (!submittedNumbers[number]) {
+                submittedNumbers[number] = true;
+                submitted++;
                 output.println(number);
             }
             else {
@@ -53,15 +54,15 @@ public class StoringTask extends TimerTask {
         new Timer().schedule(new StoringTask(), FLUSHING_FREQUENCY, FLUSHING_FREQUENCY);
     }
 
-    public static int getSubmittedNumbersSize() {
-        return submittedNumbers.size();
+    protected static int getSubmitted() {
+        return submitted;
     }
 
-    public static int getDuplicates() {
+    protected static int getDuplicates() {
         return duplicates;
     }
 
-    public static void flush() {
+    private static void flush() {
         log.trace("Storing");
         output.flush();
     }

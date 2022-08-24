@@ -26,7 +26,7 @@ public class ReportingTask extends TimerTask {
     }
 
     public static void logReport(boolean debug) {
-        int totalNumbers = StoringTask.getSubmittedNumbersSize();
+        int totalNumbers = StoringTask.getSubmitted();
         int totalDuplicates = StoringTask.getDuplicates();
 
         int iterationNumbers = totalNumbers - accumulatedNumbers;
