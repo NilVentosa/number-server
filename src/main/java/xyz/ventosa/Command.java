@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import picocli.CommandLine;
 import picocli.CommandLine.*;
+import xyz.ventosa.server.NumberServer;
 
 import static xyz.ventosa.util.Constants.*;
 
@@ -51,6 +52,6 @@ public class Command implements Runnable {
             System.exit(1);
         }
 
-        new Application(port, maxConcurrentConnections, reportFrequency, fileName).startApplication();
+        new NumberServer(port, maxConcurrentConnections, reportFrequency, fileName);
     }
 }

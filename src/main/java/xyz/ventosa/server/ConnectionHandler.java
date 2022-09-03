@@ -2,7 +2,6 @@ package xyz.ventosa.server;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import xyz.ventosa.Application;
 import xyz.ventosa.task.StoringTask;
 
 import java.io.BufferedReader;
@@ -25,15 +24,15 @@ public class ConnectionHandler implements Runnable {
 
     private int nextConnectionId = 0;
 
-    private final Application application;
+    private final NumberServer numberServer;
 
-    public ConnectionHandler(Application application) {
-        this.application = application;
+    public ConnectionHandler(NumberServer numberServer) {
+        this.numberServer = numberServer;
     }
 
     public void handleNewConnection() {
         try {
-            Socket socket = application.getNumberServer().getServerSocket().accept();
+            Socket socket = numberServer.getServerSocket().accept();
             nextConnectionId++;
             LOGGER.debug("Adding connection with id: {} to active connections.", nextConnectionId);
             activeConnectionList.put(nextConnectionId, socket);
@@ -99,7 +98,7 @@ public class ConnectionHandler implements Runnable {
             StoringTask.processNumber(number);
         }
         else if (input.equals("terminate")) {
-            application.terminateApplication();
+            numberServer.terminate();
         }
         else {
             throw new NumberServerException(String.format("Invalid input: %s", input));
@@ -109,8 +108,8 @@ public class ConnectionHandler implements Runnable {
     @Override
     public void run() {
         LOGGER.info("Starting to handle connections.");
-        while (application.getNumberServer().isServerSocketOpen()) {
-            if (isAcceptingNewConnections(application.getMaxConcurrentConnections())) {
+        while (numberServer.isServerSocketOpen()) {
+            if (isAcceptingNewConnections(numberServer.getMaxConcurrentConnections())) {
                 handleNewConnection();
             }
         }
