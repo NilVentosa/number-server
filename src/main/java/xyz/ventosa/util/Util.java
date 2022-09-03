@@ -1,11 +1,12 @@
 package xyz.ventosa.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import xyz.ventosa.server.NumberServerException;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Util {
+
+    private Util() {
+
+    }
 
     public static Integer getValidNumber(String input) throws NumberServerException {
         int result;

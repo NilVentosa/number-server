@@ -1,6 +1,5 @@
 package xyz.ventosa.server;
 
-import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,7 +11,6 @@ public class NumberServer {
 
     private static final Logger LOGGER = LogManager.getLogger("xyz.ventosa");
 
-    @Getter
     private ServerSocket serverSocket;
 
     public NumberServer(int port) {
@@ -47,5 +45,9 @@ public class NumberServer {
             return !serverSocket.isClosed();
         }
         return false;
+    }
+
+    public ServerSocket getServerSocket() {
+        return serverSocket;
     }
 }

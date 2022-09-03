@@ -1,10 +1,10 @@
 package xyz.ventosa.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Constants {
+
+    private Constants() {
+
+    }
 
     public static final String DEFAULT_PORT = "4000";
 

@@ -1,6 +1,5 @@
 package xyz.ventosa;
 
-import lombok.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.ventosa.server.ConnectionHandler;
@@ -12,15 +11,12 @@ public class Application {
 
     private static final Logger LOGGER = LogManager.getLogger("xyz.ventosa");
 
-    @Getter
     private NumberServer numberServer = null;
 
-    @Getter
     private ConnectionHandler connectionHandler = null;
 
     private final int port;
 
-    @Getter
     private final int maxConcurrentConnections;
 
     private final int reportFrequency;
@@ -55,5 +51,13 @@ public class Application {
         ReportingTask.logReport(true);
         LOGGER.info("Terminating task ended successfully.");
         System.exit(0);
+    }
+
+    public NumberServer getNumberServer() {
+        return this.numberServer;
+    }
+
+    public int getMaxConcurrentConnections() {
+        return this.maxConcurrentConnections;
     }
 }

@@ -1,6 +1,5 @@
 package xyz.ventosa.server;
 
-import lombok.Setter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.ventosa.Application;
@@ -22,7 +21,6 @@ public class ConnectionHandler implements Runnable {
 
     private final Map<Integer, Socket> activeConnectionList = new ConcurrentHashMap<>();
 
-    @Setter
     private boolean acceptingNewConnections = true;
 
     private int nextConnectionId = 0;
@@ -116,5 +114,9 @@ public class ConnectionHandler implements Runnable {
                 handleNewConnection();
             }
         }
+    }
+
+    public void setAcceptingNewConnections(boolean acceptingNewConnections) {
+        this.acceptingNewConnections = acceptingNewConnections;
     }
 }
