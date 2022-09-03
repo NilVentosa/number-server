@@ -8,7 +8,6 @@ import xyz.ventosa.server.NumberServer;
 import xyz.ventosa.task.ReportingTask;
 import xyz.ventosa.task.StoringTask;
 
-@RequiredArgsConstructor
 public class Application {
 
     private static final Logger LOGGER = LogManager.getLogger("xyz.ventosa");
@@ -27,6 +26,13 @@ public class Application {
     private final int reportFrequency;
 
     private final String fileName;
+
+    public Application(int port, int maxConcurrentConnections, int reportFrequency, String fileName) {
+        this.port = port;
+        this.maxConcurrentConnections = maxConcurrentConnections;
+        this.reportFrequency = reportFrequency;
+        this.fileName = fileName;
+    }
 
     public void startApplication() {
 

@@ -1,14 +1,11 @@
 package xyz.ventosa.task;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReportingTask extends TimerTask {
 
     private static final Logger LOGGER = LogManager.getLogger("xyz.ventosa");
@@ -16,6 +13,9 @@ public class ReportingTask extends TimerTask {
     private static int accumulatedNumbers;
 
     private static int accumulatedDuplicates;
+
+    private ReportingTask() {
+    }
 
     @Override
     public void run() {
@@ -36,7 +36,8 @@ public class ReportingTask extends TimerTask {
 
         // When debug is true it will log a final report before terminating
         if (debug) {
-            LOGGER.debug("Received {} unique numbers, {} duplicates. Unique total: {}", iterationNumbers, iterationDuplicates, totalNumbers);
+            LOGGER.debug("Received {} unique numbers, {} duplicates. Unique total: {}", iterationNumbers, iterationDuplicates,
+                    totalNumbers);
         }
         else {
             LOGGER.info("Received {} unique numbers, {} duplicates. Unique total: {}", iterationNumbers, iterationDuplicates, totalNumbers);

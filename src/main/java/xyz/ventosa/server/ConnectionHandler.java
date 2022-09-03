@@ -1,6 +1,5 @@
 package xyz.ventosa.server;
 
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,7 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static xyz.ventosa.util.Util.*;
 
-@RequiredArgsConstructor
 public class ConnectionHandler implements Runnable {
 
     private static final Logger LOGGER = LogManager.getLogger("xyz.ventosa");
@@ -30,6 +28,10 @@ public class ConnectionHandler implements Runnable {
     private int nextConnectionId = 0;
 
     private final Application application;
+
+    public ConnectionHandler(Application application) {
+        this.application = application;
+    }
 
     public void handleNewConnection() {
         try {

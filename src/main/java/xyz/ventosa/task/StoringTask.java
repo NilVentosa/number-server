@@ -13,7 +13,6 @@ import java.util.TimerTask;
 
 import static xyz.ventosa.util.Constants.*;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StoringTask extends TimerTask {
 
     private static final Logger LOGGER = LogManager.getLogger("xyz.ventosa");
@@ -25,6 +24,9 @@ public class StoringTask extends TimerTask {
     private static int submitted;
 
     private static PrintWriter output;
+
+    private StoringTask() {
+    }
 
     @Override
     public void run() {
