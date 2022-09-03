@@ -1,14 +1,16 @@
 package xyz.ventosa.server;
 
 import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketException;
 
-@Log4j2
 public class NumberServer {
+
+    private static final Logger LOGGER = LogManager.getLogger("xyz.ventosa");
 
     @Getter
     private ServerSocket serverSocket;
@@ -16,10 +18,10 @@ public class NumberServer {
     public NumberServer(int port) {
         try {
             serverSocket = new ServerSocket(port);
-            log.info("Server listening on port: {}.", serverSocket.getLocalPort());
+            LOGGER.info("Server listening on port: {}.", serverSocket.getLocalPort());
         }
         catch (IOException e) {
-            log.error("Problem starting server: {}.", e.getMessage());
+            LOGGER.error("Problem starting server: {}.", e.getMessage());
             e.printStackTrace();
             System.exit(1);
         }
@@ -27,15 +29,15 @@ public class NumberServer {
     }
 
     public void terminateServer() {
-        log.info("Terminating server");
+        LOGGER.info("Terminating server");
         try {
             serverSocket.close();
         }
         catch (SocketException e) {
-            log.debug("Socket exception: {}.", e.getMessage());
+            LOGGER.debug("Socket exception: {}.", e.getMessage());
         }
         catch (IOException e) {
-            log.error("Exception in terminate: {}.", e.getMessage());
+            LOGGER.error("Exception in terminate: {}.", e.getMessage());
             System.exit(1);
         }
     }

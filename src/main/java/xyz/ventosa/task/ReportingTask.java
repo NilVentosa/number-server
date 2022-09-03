@@ -2,14 +2,16 @@ package xyz.ventosa.task;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-@Log4j2
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReportingTask extends TimerTask {
+
+    private static final Logger LOGGER = LogManager.getLogger("xyz.ventosa");
 
     private static int accumulatedNumbers;
 
@@ -21,7 +23,7 @@ public class ReportingTask extends TimerTask {
     }
 
     public static void startReportingTask(int frequency) {
-        log.info("Starting reporting task.");
+        LOGGER.info("Starting reporting task.");
         new Timer().schedule(new ReportingTask(), frequency, frequency);
     }
 
@@ -34,11 +36,11 @@ public class ReportingTask extends TimerTask {
 
         // When debug is true it will log a final report before terminating
         if (debug) {
-            log.debug("Received {} unique numbers, {} duplicates. Unique total: {}", iterationNumbers, iterationDuplicates, totalNumbers);
-        } else {
-            log.info("Received {} unique numbers, {} duplicates. Unique total: {}", iterationNumbers, iterationDuplicates, totalNumbers);
+            LOGGER.debug("Received {} unique numbers, {} duplicates. Unique total: {}", iterationNumbers, iterationDuplicates, totalNumbers);
         }
-
+        else {
+            LOGGER.info("Received {} unique numbers, {} duplicates. Unique total: {}", iterationNumbers, iterationDuplicates, totalNumbers);
+        }
 
         accumulatedNumbers = totalNumbers;
         accumulatedDuplicates = totalDuplicates;

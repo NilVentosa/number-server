@@ -1,15 +1,17 @@
 package xyz.ventosa;
 
 import lombok.*;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import xyz.ventosa.server.ConnectionHandler;
 import xyz.ventosa.server.NumberServer;
 import xyz.ventosa.task.ReportingTask;
 import xyz.ventosa.task.StoringTask;
 
-@Log4j2
 @RequiredArgsConstructor
 public class Application {
+
+    private static final Logger LOGGER = LogManager.getLogger("xyz.ventosa");
 
     @Getter
     private NumberServer numberServer = null;
@@ -39,13 +41,13 @@ public class Application {
     }
 
     public void terminateApplication() {
-        log.info("Terminating task started.");
+        LOGGER.info("Terminating task started.");
         connectionHandler.setAcceptingNewConnections(false);
         connectionHandler.terminateAllConnections();
         numberServer.terminateServer();
         StoringTask.stopStoringTask();
         ReportingTask.logReport(true);
-        log.info("Terminating task ended successfully.");
+        LOGGER.info("Terminating task ended successfully.");
         System.exit(0);
     }
 }

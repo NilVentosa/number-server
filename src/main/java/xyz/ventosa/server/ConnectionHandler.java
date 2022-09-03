@@ -2,7 +2,8 @@ package xyz.ventosa.server;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import xyz.ventosa.Application;
 import xyz.ventosa.task.StoringTask;
 
@@ -16,9 +17,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static xyz.ventosa.util.Util.*;
 
-@Log4j2
 @RequiredArgsConstructor
 public class ConnectionHandler implements Runnable {
+
+    private static final Logger LOGGER = LogManager.getLogger("xyz.ventosa");
 
     private final Map<Integer, Socket> activeConnectionList = new ConcurrentHashMap<>();
 
@@ -33,15 +35,15 @@ public class ConnectionHandler implements Runnable {
         try {
             Socket socket = application.getNumberServer().getServerSocket().accept();
             nextConnectionId++;
-            log.debug("Adding connection with id: {} to active connections.", nextConnectionId);
+            LOGGER.debug("Adding connection with id: {} to active connections.", nextConnectionId);
             activeConnectionList.put(nextConnectionId, socket);
             startConnection(nextConnectionId);
         }
         catch (SocketException e) {
-            log.debug("Socket exception: {}.", e.getMessage());
+            LOGGER.debug("Socket exception: {}.", e.getMessage());
         }
         catch (IOException e) {
-            log.debug("Exception: {}.", e.getMessage());
+            LOGGER.debug("Exception: {}.", e.getMessage());
         }
     }
 
@@ -53,30 +55,30 @@ public class ConnectionHandler implements Runnable {
                 }
             }
             catch (IOException e) {
-                log.debug("{}: {}.", e.getClass().getSimpleName(), e.getMessage());
+                LOGGER.debug("{}: {}.", e.getClass().getSimpleName(), e.getMessage());
             }
             finally {
                 terminateConnection(id);
             }
         }).start();
-        log.debug("New connection with id: {}.", id);
+        LOGGER.debug("New connection with id: {}.", id);
     }
 
     protected void terminateConnection(Integer id) {
         try {
             if (!activeConnectionList.get(id).isClosed()) {
-                log.debug("Closing socket for connection with id: {}.", id);
+                LOGGER.debug("Closing socket for connection with id: {}.", id);
                 activeConnectionList.get(id).close();
             }
             if (activeConnectionList.remove(id) != null) {
-                log.debug("Removed connection with id: {} from active connections.", id);
+                LOGGER.debug("Removed connection with id: {} from active connections.", id);
             }
         }
         catch (SocketException e) {
-            log.debug("Socket exception: {}.", e.getMessage());
+            LOGGER.debug("Socket exception: {}.", e.getMessage());
         }
         catch (IOException e) {
-            log.debug("Exception in endConnection: {}.", e.getMessage());
+            LOGGER.debug("Exception in endConnection: {}.", e.getMessage());
         }
     }
 
@@ -85,7 +87,7 @@ public class ConnectionHandler implements Runnable {
     }
 
     public void terminateAllConnections() {
-        log.info("Terminating all connections.");
+        LOGGER.info("Terminating all connections.");
         for (Integer id : activeConnectionList.keySet()) {
             terminateConnection(id);
         }
@@ -106,7 +108,7 @@ public class ConnectionHandler implements Runnable {
 
     @Override
     public void run() {
-        log.info("Starting to handle connections.");
+        LOGGER.info("Starting to handle connections.");
         while (application.getNumberServer().isServerSocketOpen()) {
             if (isAcceptingNewConnections(application.getMaxConcurrentConnections())) {
                 handleNewConnection();

@@ -1,6 +1,7 @@
 package xyz.ventosa;
 
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import picocli.CommandLine;
 import picocli.CommandLine.*;
 
@@ -11,8 +12,10 @@ import static xyz.ventosa.util.Constants.*;
                      version = "1.0",
                      description = "Starts a number server.",
                      showDefaultValues = true)
-@Log4j2
 public class Command implements Runnable {
+
+    private static final Logger LOGGER = LogManager.getLogger("xyz.ventosa");
+
     @Option(names = { "-p", "--port" },
             description = "The port the server will listen to.",
             defaultValue = DEFAULT_PORT)
@@ -40,11 +43,11 @@ public class Command implements Runnable {
     @Override
     public void run() {
         if (maxConcurrentConnections < 1) {
-            log.error("Max concurrent connections cannot be less than 1.");
+            LOGGER.error("Max concurrent connections cannot be less than 1.");
             System.exit(1);
         }
         if (reportFrequency < 100) {
-            log.error("Report frequency cannot be less than 100.");
+            LOGGER.error("Report frequency cannot be less than 100.");
             System.exit(1);
         }
 

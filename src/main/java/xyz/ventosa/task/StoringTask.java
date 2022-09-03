@@ -2,7 +2,8 @@ package xyz.ventosa.task;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,12 +13,15 @@ import java.util.TimerTask;
 
 import static xyz.ventosa.util.Constants.*;
 
-@Log4j2
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StoringTask extends TimerTask {
+
+    private static final Logger LOGGER = LogManager.getLogger("xyz.ventosa");
+
     private static final boolean[] submittedNumbers = new boolean[1000000000];
 
     private static int duplicates;
+
     private static int submitted;
 
     private static PrintWriter output;
@@ -42,12 +46,12 @@ public class StoringTask extends TimerTask {
     }
 
     public static void startStoringTask(String filename) {
-        log.info("Starting storing task.");
+        LOGGER.info("Starting storing task.");
         try {
             output = new PrintWriter(new FileWriter(filename, false), false);
         }
         catch (IOException e) {
-            log.error(String.format("Log file %s could not be created: %s", filename, e.getMessage()));
+            LOGGER.error(String.format("Log file %s could not be created: %s", filename, e.getMessage()));
             e.printStackTrace();
             System.exit(1);
         }
@@ -63,7 +67,7 @@ public class StoringTask extends TimerTask {
     }
 
     private static void flush() {
-        log.trace("Storing");
+        LOGGER.trace("Storing");
         output.flush();
     }
 
