@@ -14,12 +14,8 @@ public class NumberServer {
     private ServerSocket serverSocket;
 
     public NumberServer(int port) {
-        this(port, new ServerSocketFactory());
-    }
-
-    NumberServer(int port, ServerSocketFactory serverSocketFactory) {
         try {
-            serverSocket = serverSocketFactory.createServerSocket(port);
+            serverSocket = new ServerSocket(port);
             log.info("Server listening on port: {}.", serverSocket.getLocalPort());
         }
         catch (IOException e) {
