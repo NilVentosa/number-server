@@ -3,6 +3,7 @@ package xyz.ventosa.server;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.ventosa.task.StoringTask;
+import xyz.ventosa.util.Constants;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,8 +12,8 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static xyz.ventosa.util.Util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ConnectionHandler implements Runnable {
 
@@ -25,6 +26,8 @@ public class ConnectionHandler implements Runnable {
     private int nextConnectionId = 0;
 
     private final NumberServer numberServer;
+
+    private final Pattern pattern = Pattern.compile(Constants.VALID_INPUT_PATTERN);
 
     public ConnectionHandler(NumberServer numberServer) {
         this.numberServer = numberServer;
@@ -93,9 +96,15 @@ public class ConnectionHandler implements Runnable {
     }
 
     protected void processInput(String input) throws NumberServerException {
-        Integer number = getValidNumber(input);
-        if (number != null) {
-            StoringTask.processNumber(number);
+        if (input == null) {
+            throw new NumberServerException("Null input");
+        }
+
+        Matcher matcher = pattern.matcher(input);
+        boolean matchFound = matcher.find();
+
+        if (matchFound) {
+            StoringTask.processNumber(Integer.parseInt(input));
         }
         else if (input.equals("terminate")) {
             numberServer.terminate();

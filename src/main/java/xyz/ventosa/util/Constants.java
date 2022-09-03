@@ -16,4 +16,6 @@ public class Constants {
 
     public static final String DEFAULT_FILE_NAME = "numbers.log";
 
+    public static final String VALID_INPUT_PATTERN = "^\\d{9}$";
+
 }
